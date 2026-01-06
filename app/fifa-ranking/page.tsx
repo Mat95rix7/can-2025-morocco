@@ -47,30 +47,57 @@ async function getTeamsWithMatches() {
     return { teams: [], matches: [] };
   }
 
-  // Récupérer tous les matchs terminés ou en cours
-  const { data: matches, error: matchesError } = await supabase
-    .from('matches')
-    .select(`
+const { data: matches, error: matchesError } = await supabase
+  .from('matches')
+  .select(`
+    id,
+    home_team_id,
+    away_team_id,
+    home_score,
+    away_score,
+    match_date,
+    phase,
+    stadium,
+    status,
+    group_name,
+    home_team:teams!matches_home_team_id_fkey(
       id,
-      home_team_id,
-      away_team_id,
-      home_score,
-      away_score,
-      status,
-      phase,
-      home_team:teams!matches_home_team_id_fkey(fifa_rank_before, fifa_points_before),
-      away_team:teams!matches_away_team_id_fkey(fifa_rank_before, fifa_points_before)
-    `)
-    .in('status', ['finished', 'live']);
+      name,
+      code,
+      flag_url,
+      group_name,
+      fifa_rank_before,
+      fifa_points_before
+    ),
+    away_team:teams!matches_away_team_id_fkey(
+      id,
+      name,
+      code,
+      flag_url,
+      group_name,
+      fifa_rank_before,
+      fifa_points_before
+    )
+  `)
+  .in('status', ['finished', 'live'])
+  .returns<Match[]>();
 
   if (matchesError) {
     console.error('Error fetching matches:', matchesError);
     return { teams: teams || [], matches: [] };
   }
 
+  const safeMatches: Match[] = (matches || []).map(m => ({
+    ...m,
+    home_score: m.home_score ?? 0,
+    away_score: m.away_score ?? 0,
+    phase: m.phase ?? '',
+    status: m.status ?? 'unknown',
+  }));
+
   return { 
     teams: (teams || []) as TeamWithRankings[], 
-    matches: (matches || []) as Match[] 
+    matches: safeMatches
   };
 }
 
@@ -92,7 +119,7 @@ function calculateCurrentPoints(
     .sort((a, b) => new Date(a.match_date).getTime() - new Date(b.match_date).getTime());
 
   sortedMatches.forEach((match) => {
-    if (match.home_score === null || match.away_score === null) return;; // si pas de date, l'ordre actuel est conservé
+    if (match.home_score === null || match.away_score === null) return;;
   });
 
   sortedMatches.forEach((match) => {
@@ -178,11 +205,19 @@ export default async function FifaRankingPage() {
     (a, b) => b.currentPoints - a.currentPoints
   );
 
-  // Calculer le nouveau rang pour chaque équipe
+  const africaRanksBefore = [...teams]
+  .sort((a, b) => (a.fifa_rank_before ?? Infinity) - (b.fifa_rank_before ?? Infinity))
+  .reduce<Record<string, number>>((acc, team, i) => {
+    acc[team.id] = i + 1;
+    return acc;
+  }, {});
+
   const teamsWithNewRank = sortedTeams.map((team, index) => ({
     ...team,
-    newRank: index + 1,
-    rankChange: team.fifa_rank_before ? team.fifa_rank_before - (index + 1) : 0
+    newAfricaRank: index + 1,
+    rankChange: africaRanksBefore[team.id]
+      ? africaRanksBefore[team.id] - (index + 1)
+      : 0
   }));
 
   return (
@@ -271,7 +306,7 @@ export default async function FifaRankingPage() {
                     return (
                       <TableRow key={team.id} className="hover:bg-muted/50">
                         <TableCell className="font-bold text-lg">
-                          #{team.newRank}
+                          #{team.newAfricaRank}
                         </TableCell>
                         <TableCell>
                           <RankingBadge 

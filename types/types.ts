@@ -3,15 +3,15 @@ export interface Match {
   id: string;
   home_team_id: string | null;
   away_team_id: string | null;
-  home_score: number;
-  away_score: number;
+  home_score: number | null;
+  away_score: number | null;
   match_date: string;
   phase: string;
   stadium: string | null;
-  status: string;
+  status: string | null;
   group_name: string | null;
-  home_team?: Team;
-  away_team?: Team;
+  home_team?: Team | null;
+  away_team?: Team | null;
 }
 
 export interface Team {
