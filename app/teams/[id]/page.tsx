@@ -42,7 +42,6 @@ async function getPlayers(teamId: string) {
 
 async function getTeamStats(teamId: string) {
   const supabase = await supabaseServer();
-  
   const { data: matches } = await supabase
     .from('matches')
     .select('*')
@@ -114,8 +113,6 @@ export default async function TeamDetailPage({
 
   const positionOrder = ['GK', 'DF', 'MF', 'FW', 'Autres'];
   const sortedPositions = positionOrder.filter(pos => groupedPlayers[pos]);
-
-  const points = stats.wins * 3 + stats.draws;
   const goalDifference = stats.goalsFor - stats.goalsAgainst;
 
   return (

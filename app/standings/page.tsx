@@ -2,7 +2,7 @@ import { supabaseServer } from '@/lib/supabase/server';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, TrendingUp, TrendingDown } from 'lucide-react';
+import { Trophy } from 'lucide-react';
 import Image from 'next/image';
 
 type StandingWithTeam = {
@@ -21,34 +21,6 @@ type StandingWithTeam = {
   updated_at: string;
   team: { name: string; code: string; flag_url: string | null } | null;
 };
-
-// async function getStandings(): Promise<StandingWithTeam[]> {
-//   console.log('🔍 Fetching standings...');
-  
-//   const { data, error } = await supabase
-//     .from('standings')
-//     .select(`
-//       *,
-//       team:teams(name, code, flag_url)
-//     `)
-//     .order('group_name', { ascending: true })
-//     .order('position', { ascending: true });
-
-//   console.log('📊 Raw response:', { data, error });
-
-//   if (error) {
-//     console.error('❌ Error fetching standings:', error);
-//     return [];
-//   }
-
-//   if (!data || data.length === 0) {
-//     console.warn('⚠️ No standings data found');
-//   } else {
-//     console.log(`✅ Found ${data.length} standings entries`);
-//   }
-
-//   return data || [];
-// }
 
 async function getStandings(): Promise<StandingWithTeam[]> {
   const supabase = await supabaseServer();
@@ -101,7 +73,7 @@ function StandingsTable({ standings, groupName }: { standings: StandingWithTeam[
             <TableHeader>
               <TableRow>
                 <TableHead className="w-12">Pos</TableHead>
-                <TableHead className="min-w-[180px]">Équipe</TableHead>
+                <TableHead className="min-w-45">Équipe</TableHead>
                 <TableHead className="text-center w-16">Pts</TableHead>
                 <TableHead className="text-center w-12">J</TableHead>
                 <TableHead className="text-center w-12">G</TableHead>
@@ -120,7 +92,7 @@ function StandingsTable({ standings, groupName }: { standings: StandingWithTeam[
                   <TableCell>
                     <div className="flex items-center gap-2">
                       {/* <span className="text-2xl">{standing.team?.flag_url || '🏳️'}</span> */}
-                      <div className="w-12 h-8 relative flex-shrink-0">
+                      <div className="w-12 h-8 relative shrink-0">
                           {standing.team?.flag_url ? (
                             <Image
                               src={standing.team.flag_url}
@@ -202,7 +174,7 @@ export default async function StandingsPage() {
       <Card className="mt-8">
         <CardHeader>
           <CardTitle>Règles de classement CAF</CardTitle>
-          <CardDescription>En cas d'égalité de points</CardDescription>
+          <CardDescription>En cas d&apos;égalité de points</CardDescription>
         </CardHeader>
         <CardContent>
           <ol className="list-decimal list-inside space-y-2 text-sm">
