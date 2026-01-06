@@ -25,11 +25,11 @@ export default async function Home() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-12 text-center">
-        <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-green-600 to-yellow-600 bg-clip-text text-transparent">
+        <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-linear-to-r from-green-600 to-yellow-600 bg-clip-text text-transparent">
           CAN 2025
         </h1>
         <p className="text-xl text-muted-foreground">
-          Coupe d'Afrique des Nations - Maroc 2025
+          Coupe d&apos;Afrique des Nations - Maroc 2025
         </p>
       </div>
 
@@ -66,7 +66,7 @@ export default async function Home() {
             <TrendingUp className="h-4 w-4 text-red-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">Groupes</div>
+            <div className="text-3xl font-bold">Huitièmes</div>
             <p className="text-xs text-muted-foreground mt-1">
               En cours
             </p>
@@ -89,7 +89,6 @@ export default async function Home() {
                 {upcomingMatches.map((match: any) => (
                   <div key={match.id} className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
                     <div className="flex items-center gap-4 flex-1">
-
                       <div className="text-right flex-1">
                         <p className="font-medium">{match.home_team?.name || 'TBD'}</p>
                         <p className="text-sm text-muted-foreground">{match.home_team?.code || ''}</p>
