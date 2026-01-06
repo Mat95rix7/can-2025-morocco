@@ -1,10 +1,10 @@
 // Match Card Component
 import { OFFICIAL_STADIUMS, PHASES, STATUSES } from "@/types/constants";
 import { Match } from "@/types/types";
-import { Card, CardContent } from "./ui/card";
-import { Calendar, MapPin, Pencil, Trash2 } from "lucide-react";
-import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Calendar, Pencil, Trash2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 // ==================== UTILITY FUNCTIONS ====================
 const getStadiumInfo = (stadiumId: string) => {
@@ -51,7 +51,7 @@ export const MatchCard: React.FC<{
               </div>
             </div>
 
-            <div className="flex items-center justify-between gap-6 bg-gradient-to-r from-slate-50 to-transparent dark:from-slate-800 dark:to-transparent rounded-xl p-4">
+            <div className="flex items-center justify-between gap-6 bg-linear-to-r from-slate-50 to-transparent dark:from-slate-800 dark:to-transparent rounded-xl p-4">
               <div className="flex items-center gap-3 flex-1">
                 {match.home_team?.flag_url && (
                   <img src={match.home_team.flag_url} alt="" className="w-12 h-8 object-cover rounded shadow" />
@@ -60,11 +60,11 @@ export const MatchCard: React.FC<{
               </div>
 
               <div className="flex items-center gap-3 bg-white dark:bg-slate-900 rounded-lg px-6 py-3 shadow-lg">
-                <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <span className="text-3xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   {match.home_score}
                 </span>
                 <span className="text-2xl font-bold text-muted-foreground">-</span>
-                <span className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <span className="text-3xl font-bold bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                   {match.away_score}
                 </span>
               </div>

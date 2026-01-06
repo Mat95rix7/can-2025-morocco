@@ -1,9 +1,9 @@
 // Search and Filter Bar Component
 import { Filter, Plus, Search } from "lucide-react";
-import { Card, CardContent,  } from "./ui/card";
-import { Input } from "./ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { Button } from "./ui/button";
+import { Card, CardContent,  } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import { PHASES, STATUSES } from "@/types/constants";
 export const SearchFilterBar: React.FC<{
   search: string;
@@ -62,7 +62,7 @@ export const SearchFilterBar: React.FC<{
             </Select>
           </>
         )}
-        <Button onClick={onCreateClick} className="h-11 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg shadow-blue-500/30">
+        <Button onClick={onCreateClick} className="h-11 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg shadow-blue-500/30">
           <Plus className="w-4 h-4 mr-2" />{createLabel}
         </Button>
       </div>

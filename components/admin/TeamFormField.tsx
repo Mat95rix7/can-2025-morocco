@@ -1,12 +1,12 @@
 import { GROUPS } from "@/types/constants";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export const TeamFormFields: React.FC<{ form: any; setForm: (form: any) => void }> = ({ form, setForm }) => (
   <div className="grid md:grid-cols-2 gap-6">
     <div className="space-y-2">
-      <Label className="text-sm font-medium">Nom de l'équipe *</Label>
+      <Label className="text-sm font-medium">Nom de l&apos;équipe *</Label>
       <Input
         value={form.name || ''}
         onChange={(e) => setForm({ ...form, name: e.target.value })}

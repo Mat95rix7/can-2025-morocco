@@ -17,17 +17,17 @@ import { playerService } from '@/lib/services/player.service';
 
 import { Team, Player } from '@/types/types';
 import { OFFICIAL_STADIUMS, TABS } from '@/types/constants';
-import { SearchFilterBar } from '@/components/SearchFilter';
-import { MatchCard } from '@/components/MatchCard';
-import { MatchFormFields } from '@/components/MatchFormFields';
-import { TeamFormFields } from '@/components/TeamFormField';
-import { PlayerFormFields } from '@/components/PlayerFormField';
+import { SearchFilterBar } from '@/components/admin/SearchFilter';
+import { MatchCard } from '@/components/admin/MatchCard';
+import { MatchFormFields } from '@/components/admin/MatchFormFields';
+import { TeamFormFields } from '@/components/admin/TeamFormField';
+import { PlayerFormFields } from '@/components/admin/PlayerFormField';
 
 // ==================== COMPONENTS ====================
 
 // Loading Component
 const LoadingSpinner = () => (
-  <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-950 dark:via-blue-950 dark:to-purple-950 flex items-center justify-center">
+  <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-950 dark:via-blue-950 dark:to-purple-950 flex items-center justify-center">
     <div className="text-center space-y-4">
       <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary border-t-transparent mx-auto"></div>
       <p className="text-lg font-medium text-muted-foreground">Chargement...</p>
@@ -69,7 +69,7 @@ const TeamCard: React.FC<{
       <div className="flex items-start justify-between gap-4">
         {/* Section gauche : Info équipe */}
         <div className="flex items-start gap-3 flex-1">
-          <div className="text-4xl flex-shrink-0">
+          <div className="text-4xl shrink-0">
             {team.flag_url ? (
               <img src={team.flag_url} alt={team.name} className="w-12 h-8 object-cover rounded" />
             ) : '🏳️'}
@@ -153,7 +153,7 @@ const StadiumCard: React.FC<{ stadium: typeof OFFICIAL_STADIUMS[0] }> = ({ stadi
     <CardContent className="p-6">
       <div className="flex items-start gap-4">
         {/* Icône du stade */}
-        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+        <div className="w-14 h-14 rounded-xl bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
           <Building2 className="w-7 h-7 text-white" />
         </div>
         
@@ -161,7 +161,7 @@ const StadiumCard: React.FC<{ stadium: typeof OFFICIAL_STADIUMS[0] }> = ({ stadi
         <div className="flex-1 min-w-0">
           <h3 className="font-bold text-lg mb-2 truncate">{stadium.name}</h3>
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-            <MapPin className="w-4 h-4 flex-shrink-0" />
+            <MapPin className="w-4 h-4 shrink-0" />
             <span className="truncate">{stadium.city}</span>
           </div>
           <Badge variant="outline" className="gap-1.5">
@@ -451,13 +451,13 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-950 dark:via-blue-950 dark:to-purple-950">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-950 dark:via-blue-950 dark:to-purple-950">
       {/* Header */}
       <div className="sticky top-0 z-10 backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 shadow-sm">
         <div className="container mx-auto px-4 py-6 max-w-7xl">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              <h1 className="text-3xl md:text-4xl font-bold bg-linear-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                 Administration CAN 2025
               </h1>
               <p className="text-sm text-muted-foreground mt-1">
@@ -488,7 +488,7 @@ export default function AdminPage() {
               <TabsTrigger
                 key={value}
                 value={value}
-                className={`data-[state=active]:bg-gradient-to-br data-[state=active]:${gradient} data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-blue-500/30 h-20 rounded-2xl transition-all`}
+                className={`data-[state=active]:bg-linear-to-br data-[state=active]:${gradient} data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-blue-500/30 h-20 rounded-2xl transition-all`}
               >
                 <div className="flex flex-col items-center gap-2">
                   <Icon className="w-5 h-5" />
@@ -723,7 +723,7 @@ export default function AdminPage() {
               <Button
                 onClick={handleSubmit}
                 disabled={loading}
-                className="h-11 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                className="h-11 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
               >
                 <Save className="w-4 h-4 mr-2" />
                 {loading ? 'Enregistrement...' : 'Enregistrer'}

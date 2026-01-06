@@ -1,7 +1,8 @@
 import { POSITIONS } from "@/types/constants";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Team } from "@/types/types";
 
 export const PlayerFormFields: React.FC<{ form: any; setForm: (form: any) => void; teams: Team[] }> = ({ form, setForm, teams }) => (
   <div className="grid md:grid-cols-2 gap-6">
