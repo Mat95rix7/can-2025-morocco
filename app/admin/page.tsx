@@ -129,7 +129,7 @@ const PlayerCard: React.FC<{
             {player.number || '?'}
           </div>
           <div>
-            <h3 className="font-bold">{player.name}</h3>
+            <h3 className="font-bold">{player.firstname} {player.lastname}</h3>
             <p className="text-sm text-muted-foreground">{player.team?.name || 'Sans équipe'}</p>
             {player.position && <Badge variant="outline" className="mt-1">{player.position}</Badge>}
           </div>
@@ -210,7 +210,7 @@ export default function AdminPage() {
       t.code?.toLowerCase().includes(search.toLowerCase())
     ),
     players: players.filter(p =>
-      p.name?.toLowerCase().includes(search.toLowerCase()) ||
+      p.firstname?.toLowerCase().includes(search.toLowerCase()) || p.lastname?.toLowerCase().includes(search.toLowerCase()) ||
       p.team?.name?.toLowerCase().includes(search.toLowerCase())
     ),
     stadiums: OFFICIAL_STADIUMS.filter(s =>

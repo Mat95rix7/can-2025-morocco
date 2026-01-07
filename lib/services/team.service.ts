@@ -1,7 +1,6 @@
 import { supabase as supabaseClient } from '@/lib/supabase/browser';
 import type { Database } from '@/lib/database.types';
 
-type Team = Database['public']['Tables']['teams']['Row'];
 type TeamInsert = Database['public']['Tables']['teams']['Insert'];
 type TeamUpdate = Database['public']['Tables']['teams']['Update'];
 
