@@ -1,4 +1,5 @@
-// app/fifa/page.tsx
+// app/fifa-ranking/page.tsx
+export const dynamic = 'force-dynamic'
 import { supabaseServer } from '@/lib/supabase/server';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -44,8 +45,6 @@ const CAF_COEFFICIENT = 1.0;
 
 async function getTeamsWithMatches() {
   const supabase = await supabaseServer();
-
-  // Récupérer les équipes via la VIEW pour éviter les conflits de colonnes
   const { data: teams, error: teamsError } = await supabase
     .from('teams_with_fifa_ranking')
     .select('*')
