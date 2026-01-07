@@ -1,12 +1,7 @@
 import { supabaseServer } from '@/lib/supabase/server';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, Trophy, TrendingUp } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-
-
-
+import { TeamCard } from '@/components/TeamCard';
 async function getTeams() {
   const supabase = await supabaseServer();
   const { data, error } = await supabase
@@ -33,59 +28,6 @@ async function getPlayerCount(teamId: string) {
   return count || 0;
 }
 
-function TeamCard({ team, playerCount }: { team: any; playerCount: number }) {
-  return (
-    <Link href={`/teams/${team.id}`}>
-      <Card className="hover:shadow-lg transition-all hover:scale-[1.02] cursor-pointer h-full">
-        <CardHeader>
-          <div className="flex items-start justify-between">
-            <div className="flex items-center gap-3">
-              <div className="text-5xl">
-                {team.flag_url ? (
-                  <Image
-                    src={team.flag_url}
-                    alt={`${team.name} flag`}
-                    width={48}
-                    height={48}
-                    className="inline"
-                  />
-                ) : (
-                  '🏳️'
-                )}
-              </div>
-              <div>
-                <CardTitle className="text-xl">{team.name}</CardTitle>
-                <CardDescription className="text-lg font-medium mt-1">{team.code}</CardDescription>
-              </div>
-            </div>
-            {team.group_name && (
-              <Badge variant="outline" className="text-sm">
-                Groupe {team.group_name}
-              </Badge>
-            )}
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="text-muted-foreground">Classement FIFA</p>
-              <p className="text-2xl font-bold">{team.fifa_rank_before || 'N/A'}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">Points FIFA</p>
-              <p className="text-2xl font-bold">{team.fifa_points_before || 0}</p>
-            </div>
-          </div>
-          <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
-            <Users className="h-4 w-4" />
-            <span>{playerCount} joueurs</span>
-          </div>
-        </CardContent>
-      </Card>
-    </Link>
-  );
-}
-
 export default async function TeamsPage() {
   const teams = await getTeams();
   
@@ -95,9 +37,8 @@ export default async function TeamsPage() {
       playerCount: await getPlayerCount(team.id)
     }))
   );
-  
   const groupedTeams = teamsWithPlayerCount.reduce((acc: any, team: any) => {
-    const group = team.group_name || 'Sans groupe';
+  const group = team.group_name || 'Sans groupe';
     if (!acc[group]) {
       acc[group] = [];
     }
@@ -106,12 +47,14 @@ export default async function TeamsPage() {
   }, {});
 
   const groups = Object.keys(groupedTeams).sort();
+  const totalPlayers = teamsWithPlayerCount.reduce((sum, team) => sum + team.playerCount, 0);
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2">Équipes participantes</h1>
-        <p className="text-muted-foreground">Les 24 nations de la CAN 2025</p>
+        <p className="text-muted-foreground">Les nations de la CAN 2025</p>
+            <p>{teams.length} équipes • {totalPlayers} joueurs</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -163,7 +106,7 @@ export default async function TeamsPage() {
                 <Trophy className="h-6 w-6 text-yellow-600" />
                 {group === 'Sans groupe' ? group : `Groupe ${group}`}
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 max-w-7xl mx-auto">
                 {groupedTeams[group].map((team: any) => (
                   <TeamCard key={team.id} team={team} playerCount={team.playerCount} />
                 ))}

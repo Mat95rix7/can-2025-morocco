@@ -26,9 +26,15 @@ export interface Team {
 
 export interface Player {
   id: string;
-  name: string;
+  firstname: string;
+  lastname: string;
   team_id: string | null;
   position: string | null;
   number: number | null;
   team?: Team;
+  club?: string | null;
+  birth_date: string | null;
+  birth_place: string | null;
+  height: number | null;
+  photo?: string | null;
 }

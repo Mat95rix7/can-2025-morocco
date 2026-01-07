@@ -28,7 +28,7 @@ const getStadiumInfo = (stadiumId: string) => {
 export function MatchCard({ match }: { match: any }) {
   const stadium = getStadiumInfo(match.stadium);
   return (
-    <Card className="hover:shadow-xl hover:scale-[1.02] transition-all duration-300 bg-linear-to-br from-card to-muted/50 border-2">
+    <Card className="hover:shadow-xl hover:scale-[1.02] transition-all duration-300 bg-linear-to-br from-card to-muted/50 border-2 bg-slate-900 hover:bg-slate-800 border-slate-700">
       <CardHeader className="pb-3 space-y-2">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-muted-foreground">
