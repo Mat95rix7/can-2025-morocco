@@ -1,12 +1,14 @@
-import { supabase as supabaseClient } from '@/lib/supabase/browser';
+import { supabaseBrowser} from '@/lib/supabase/browser';
 import type { Database } from '@/lib/database.types';
+
+const getClient = () => supabaseBrowser();
 
 type PlayerInsert = Database['public']['Tables']['players']['Insert'];
 type PlayerUpdate = Database['public']['Tables']['players']['Update'];
 
 export const playerService = {
   async getAll() {
-    const { data, error } = await supabaseClient
+    const { data, error } = await getClient()
       .from('players')
       .select(`
         *,
@@ -19,7 +21,7 @@ export const playerService = {
   },
 
   async getByTeam(teamId: string) {
-    const { data, error } = await supabaseClient
+    const { data, error } = await getClient()
       .from('players')
       .select(`
         *,
@@ -33,7 +35,7 @@ export const playerService = {
   },
 
   async create(player: PlayerInsert) {
-    const { data, error } = await supabaseClient
+    const { data, error } = await getClient()
       .from('players')
       .insert([player])
       .select()
@@ -44,7 +46,7 @@ export const playerService = {
   },
 
   async update(id: string, player: PlayerUpdate) {
-    const { data, error } = await supabaseClient
+    const { data, error } = await getClient()
       .from('players')
       .update(player)
       .eq('id', id)
@@ -56,7 +58,7 @@ export const playerService = {
   },
 
   async delete(id: string) {
-    const { error } = await supabaseClient
+    const { error } = await getClient()
       .from('players')
       .delete()
       .eq('id', id);

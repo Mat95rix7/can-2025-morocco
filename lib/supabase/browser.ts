@@ -8,4 +8,4 @@ export function supabaseBrowser() {
   );
 }
 
-export const supabase = supabaseBrowser();
+// export const supabase = supabaseBrowser();

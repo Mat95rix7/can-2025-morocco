@@ -1,6 +1,8 @@
 // lib/services/cache.service.ts
-import { supabase as supabaseClient } from '@/lib/supabase/browser';
+import {  supabaseBrowser } from '@/lib/supabase/browser';
 import type { Database } from '@/lib/database.types';
+
+const getClient = () => supabaseBrowser();
 
 type MatchInsert = Database['public']['Tables']['matches']['Insert'];
 
@@ -45,7 +47,7 @@ export const matchService = {
     const cached = cacheService.get(cacheKey);
     if (cached) return cached;
 
-    const { data, error } = await supabaseClient
+    const { data, error } = await getClient()
       .from('matches')
       .select('...')
       .order('match_date');
@@ -58,7 +60,7 @@ export const matchService = {
   
   // Invalider le cache après modification
   async create(match: MatchInsert) {
-    const result = await supabaseClient.from('matches').insert([match]);
+    const result = await getClient().from('matches').insert([match]);
     cacheService.clear('matches:');
     return result;
   }

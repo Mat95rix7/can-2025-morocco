@@ -1,13 +1,15 @@
-import { supabase as supabaseClient } from '@/lib/supabase/browser';
+import { supabaseBrowser } from '@/lib/supabase/browser';
 import type { Database } from '@/lib/database.types';
 
 type MatchInsert = Database['public']['Tables']['matches']['Insert'];
 type MatchUpdate = Database['public']['Tables']['matches']['Update'];
 
+const getClient = () => supabaseBrowser();
+
 export const matchService = {
   // GET ALL
   async getAll() {
-    const { data, error } = await supabaseClient
+    const { data, error } = await getClient()
       .from('matches')
       .select(`
         *,
@@ -22,7 +24,7 @@ export const matchService = {
 
   // GET BY ID
   async getById(id: string) {
-    const { data, error } = await supabaseClient
+    const { data, error } = await getClient()
       .from('matches')
       .select(`
         *,
@@ -38,7 +40,7 @@ export const matchService = {
 
   // GET BY PHASE
   async getByPhase(phase: string) {
-    const { data, error } = await supabaseClient
+    const { data, error } = await getClient()
       .from('matches')
       .select(`
         *,
@@ -54,7 +56,7 @@ export const matchService = {
 
   // CREATE
   async create(match: MatchInsert) {
-    const { data, error } = await supabaseClient
+    const { data, error } = await getClient()
       .from('matches')
       .insert([match])
       .select()
@@ -66,7 +68,7 @@ export const matchService = {
 
   // UPDATE
   async update(id: string, match: MatchUpdate) {
-    const { data, error } = await supabaseClient
+    const { data, error } = await getClient()
       .from('matches')
       .update(match)
       .eq('id', id)
@@ -79,7 +81,7 @@ export const matchService = {
 
   // DELETE
   async delete(id: string) {
-    const { error } = await supabaseClient
+    const { error } = await getClient()
       .from('matches')
       .delete()
       .eq('id', id);
@@ -89,7 +91,7 @@ export const matchService = {
 
   // BULK UPDATE SCORES (utile pour mise à jour live)
   async updateScore(id: string, homeScore: number, awayScore: number) {
-    const { data, error } = await supabaseClient
+    const { data, error } = await getClient()
       .from('matches')
       .update({ 
         home_score: homeScore, 

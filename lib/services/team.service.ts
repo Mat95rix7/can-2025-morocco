@@ -1,12 +1,14 @@
-import { supabase as supabaseClient } from '@/lib/supabase/browser';
+import { supabaseBrowser } from '@/lib/supabase/browser';
 import type { Database } from '@/lib/database.types';
+
+const getClient = () => supabaseBrowser();
 
 type TeamInsert = Database['public']['Tables']['teams']['Insert'];
 type TeamUpdate = Database['public']['Tables']['teams']['Update'];
 
 export const teamService = {
   async getAll() {
-    const { data, error } = await supabaseClient
+    const { data, error } = await getClient()
       .from('teams')
       .select('*')
       .order('name', { ascending: true });
@@ -16,7 +18,7 @@ export const teamService = {
   },
 
   async getById(id: string) {
-    const { data, error } = await supabaseClient
+    const { data, error } = await getClient()
       .from('teams')
       .select('*')
       .eq('id', id)
@@ -27,7 +29,7 @@ export const teamService = {
   },
 
   async getByGroup(groupName: string) {
-    const { data, error } = await supabaseClient
+    const { data, error } = await getClient()
       .from('teams')
       .select('*')
       .eq('group_name', groupName)
@@ -38,7 +40,7 @@ export const teamService = {
   },
 
   async create(team: TeamInsert) {
-    const { data, error } = await supabaseClient
+    const { data, error } = await getClient()
       .from('teams')
       .insert([team])
       .select()
@@ -49,7 +51,7 @@ export const teamService = {
   },
 
   async update(id: string, team: TeamUpdate) {
-    const { data, error } = await supabaseClient
+    const { data, error } = await getClient()
       .from('teams')
       .update(team)
       .eq('id', id)
@@ -61,7 +63,7 @@ export const teamService = {
   },
 
   async delete(id: string) {
-    const { error } = await supabaseClient
+    const { error } = await getClient()
       .from('teams')
       .delete()
       .eq('id', id);
