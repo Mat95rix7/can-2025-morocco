@@ -14,7 +14,7 @@ export const playerService = {
         *,
         team:teams(id, name, code, flag_url)
       `)
-      .order('name', { ascending: true });
+      .order('firstname', { ascending: true });
 
     if (error) throw error;
     return data || [];

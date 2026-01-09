@@ -9,8 +9,17 @@ export const PlayerFormFields: React.FC<{ form: any; setForm: (form: any) => voi
     <div className="space-y-2 md:col-span-2">
       <Label className="text-sm font-medium">Nom du joueur *</Label>
       <Input
-        value={form.name || ''}
-        onChange={(e) => setForm({ ...form, name: e.target.value })}
+        value={form.firstname || ''}
+        onChange={(e) => setForm({ ...form, firstname: e.target.value })}
+        placeholder="Ex: Mohamed Salah"
+        className="h-11"
+      />
+    </div>
+    <div className="space-y-2 md:col-span-2">
+      <Label className="text-sm font-medium">Prénom du joueur *</Label>
+      <Input
+        value={form.lastname || ''}
+        onChange={(e) => setForm({ ...form, lastname: e.target.value })}
         placeholder="Ex: Mohamed Salah"
         className="h-11"
       />

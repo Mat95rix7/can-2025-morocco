@@ -222,32 +222,6 @@ export interface Database {
           created_at?: string;
         };
       };
-      fifa_rankings: {
-        Row: {
-          id: string;
-          team_id: string | null;
-          points: number;
-          rank: number;
-          date: string;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          team_id?: string | null;
-          points: number;
-          rank: number;
-          date: string;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          team_id?: string | null;
-          points?: number;
-          rank?: number;
-          date?: string;
-          created_at?: string;
-        };
-      };
     };
   };
 }

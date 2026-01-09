@@ -1,16 +1,13 @@
 // scripts/sync-fifa-rankings.ts
 // Système d'actualisation automatique du classement FIFA
 
-import { createClient } from '@supabase/supabase-js';
-// import fs from 'fs/promises';
-// import path from 'path';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+import { supabaseBrowser } from "@/lib/supabase/browser";
+import { get } from "http";
 
 // URL de l'API FIFA (à adapter selon la vraie API)
 const FIFA_API_URL = 'https://api.fifa.com/api/v3/ranking/men';
+
+const getClient = () => supabaseBrowser();
 
 interface FifaApiResponse {
   dateId: string;
@@ -34,7 +31,7 @@ interface FifaApiResponse {
 async function checkForNewRanking(): Promise<{ hasUpdate: boolean; data?: FifaApiResponse }> {
   try {
     // Récupérer le dernier dateId stocké
-    const { data: currentRanking } = await supabase
+    const { data: currentRanking } = await getClient()
       .from('fifa_world_rankings')
       .select('date_id, last_update')
       .order('last_update', { ascending: false })
@@ -75,7 +72,7 @@ async function updateRankings(fifaData: FifaApiResponse) {
     console.log('🔄 Début de la mise à jour...');
 
     // 1. Archiver l'ancien classement
-    const { data: oldRankings } = await supabase
+    const { data: oldRankings } = await getClient()
       .from('fifa_world_rankings')
       .select('country_code, rank, points, date_id, confederation');
 
@@ -89,12 +86,12 @@ async function updateRankings(fifaData: FifaApiResponse) {
         snapshot_date: new Date().toISOString()
       }));
 
-      await supabase.from('fifa_ranking_history').insert(historyData);
+      await getClient().from('fifa_ranking_history').insert(historyData);
       console.log('📦 Ancien classement archivé');
     }
 
     // 2. Supprimer les anciennes données
-    await supabase.from('fifa_world_rankings').delete().neq('id', 0);
+    await getClient().from('fifa_world_rankings').delete().neq('id', 0);
 
     // 3. Insérer les nouvelles données
     const newRankings = fifaData.rankings
@@ -113,14 +110,14 @@ async function updateRankings(fifaData: FifaApiResponse) {
         last_update: new Date(fifaData.lastUpdate).toISOString()
       }));
 
-    const { error } = await supabase
+    const { error } = await getClient()
       .from('fifa_world_rankings')
       .insert(newRankings);
 
     if (error) throw error;
 
     // 4. Mettre à jour les équipes CAN
-    await supabase.rpc('update_teams_world_rank');
+    await getClient().rpc('update_teams_world_rank');
 
     console.log('✅ Mise à jour terminée avec succès');
 

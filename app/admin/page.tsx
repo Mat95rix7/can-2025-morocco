@@ -309,7 +309,8 @@ export default function AdminPage() {
         setTeams(updatedTeams);
       } else if (tab === 'players') {
         const data = {
-          name: form.name,
+          firstname: form.firstname,
+          lastname: form.lastname,
           team_id: form.team_id || null,
           position: form.position || null,
           number: form.number || null
@@ -398,7 +399,8 @@ export default function AdminPage() {
       });
     } else if (tab === 'players') {
       setForm({
-        name: item.name || '',
+        firstname: item.firstname || '',
+        lastname: item.lastname || '',
         team_id: item.team_id || '',
         position: item.position || '',
         number: item.number || 0
@@ -572,7 +574,7 @@ export default function AdminPage() {
             )}
           </TabsContent>
 
-          {/* JOUEURS */}
+          JOUEURS
           <TabsContent value="players" className="space-y-6">
             {selectedTeam ? (
               // Vue détaillée d'une équipe avec ses joueurs
