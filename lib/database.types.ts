@@ -132,7 +132,8 @@ export interface Database {
       players: {
         Row: {
           id: string;
-          name: string;
+          firstname: string;
+          lastname: string;
           team_id: string | null;
           position: string | null;
           number: number | null;
@@ -140,7 +141,8 @@ export interface Database {
         };
         Insert: {
           id?: string;
-          name: string;
+          firstname: string;
+          lastname: string; 
           team_id?: string | null;
           position?: string | null;
           number?: number | null;
@@ -148,7 +150,8 @@ export interface Database {
         };
         Update: {
           id?: string;
-          name?: string;
+          firstname?: string; 
+          lastname?: string;
           team_id?: string | null;
           position?: string | null;
           number?: number | null;
