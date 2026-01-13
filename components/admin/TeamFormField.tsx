@@ -4,19 +4,20 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Image from "next/image";
 
-export interface TeamForm {
-  name: string;
-  code: string;
-  flag_url?: string | null;
-  fifa_rank?: number | null;
-  group_name?: string | null;
-  fifa_rank_before?: number | null;
-  fifa_points_before?: number | null;
-}
+import { Team } from "@/types/types";
+
+// export interface TeamForm {
+//   name: string;
+//   code: string;
+//   flag_url?: string | null;
+//   group_name?: string | null;
+//   fifa_rank_before?: number | null;
+//   fifa_points_before?: number | null;
+// }
 
 interface TeamFormFieldsProps {
-  form: TeamForm;
-  setForm: React.Dispatch<React.SetStateAction<TeamForm>>;
+  form: Team;
+  setForm: React.Dispatch<React.SetStateAction<Team>>;
 }
 
 

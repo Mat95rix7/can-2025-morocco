@@ -1,25 +1,13 @@
-import { Team } from "@/types/types";
+import { Match, Team } from "@/types/types";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { GROUPS, OFFICIAL_STADIUMS, PHASES, STATUSES } from "@/types/constants";
 import Image from "next/image";
 
-export interface MatchForm {
-  home_team_id: string | null;
-  away_team_id: string | null;
-  home_score?: number;
-  away_score?: number;
-  match_date: string;
-  phase?: string;
-  stadium?: string | null;
-  status?: string;
-  group_name?: string | null;
-}
-
 interface MatchFormFieldsProps {
-  form: MatchForm;
-  setForm: React.Dispatch<React.SetStateAction<MatchForm>>;
+  form: Match;
+  setForm: React.Dispatch<React.SetStateAction<Match>>;
   teams: Team[];
 }
 

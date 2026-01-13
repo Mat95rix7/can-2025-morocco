@@ -16,20 +16,6 @@ interface YearGroup {
   dates: RankingDateItem[];
 }
 
-interface RankingItem {
-  rank: number;
-  previousRank?: number;
-  name: string;
-  countryCode: string;
-  points: number;
-  previousPoints?: number;
-  flag: string;
-  countryURL: string;
-  confederation: string;
-}
-
-
-
 
 // Fonction pour charger un fichier JSON de manière sûre
 function loadJSON(filePath: string) {
@@ -120,16 +106,16 @@ export async function GET() {
     console.log('📊 Nouveau classement FIFA détecté, mise à jour...');
 
     // 4. Mapper les données (previousRank est déjà fourni par l'API)
-    const rankings = data.rankings.map((item: RankingItem) => ({
-      rank: item.rank,
-      previousRank: item.previousRank,
-      name: item.name,
-      countryCode: item.countryCode,
-      // points: item.totalPoints,
+    const rankings = data.rankings.map((item: any) => ({
+      rank: item.rankingItem.rank,
+      previousRank: item.rankingItem.previousRank,
+      name: item.rankingItem.name,
+      countryCode: item.rankingItem.countryCode,
+      points: item.rankingItem.totalPoints,
       previousPoints: item.previousPoints,
-      // flag: item.flag.src,
-      countryURL: `https://inside.fifa.com${item.countryURL}`,
-      confederation: item.confederation
+      flag: item.rankingItem.flag.src,
+      countryURL: `https://inside.fifa.com${item.rankingItem.countryURL}`,
+      confederation: item.tag.text
     }));
 
     const newData = { 

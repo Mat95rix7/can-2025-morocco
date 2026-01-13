@@ -2,20 +2,14 @@ import { POSITIONS } from "@/types/constants";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Team } from "@/types/types";
+import { Player, Team } from "@/types/types";
 import Image from "next/image";
 
-export interface PlayerForm {
-  firstname?: string;
-  lastname?: string;
-  team_id?: string;
-  position?: string;
-  number?: number;
-}
+
 
 interface PlayerFormFieldsProps {
-  form: PlayerForm;
-  setForm: React.Dispatch<React.SetStateAction<PlayerForm>>;
+  form: Player;
+  setForm: React.Dispatch<React.SetStateAction<Player>>;
   teams: Team[];
 }
 

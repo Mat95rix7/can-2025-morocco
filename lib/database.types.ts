@@ -26,7 +26,7 @@ export interface Database {
           code?: string;
           flag_url?: string | null;
           group_name?: string | null;
-          fifa_points_before?: number;
+          fifa_points_before?: number | null;
           fifa_rank_before?: number | null;
           created_at?: string;
         };
