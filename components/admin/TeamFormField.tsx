@@ -2,8 +2,25 @@ import { GROUPS } from "@/types/constants";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import Image from "next/image";
 
-export const TeamFormFields: React.FC<{ form: any; setForm: (form: any) => void }> = ({ form, setForm }) => (
+export interface TeamForm {
+  name: string;
+  code: string;
+  flag_url?: string | null;
+  fifa_rank?: number | null;
+  group_name?: string | null;
+  fifa_rank_before?: number | null;
+  fifa_points_before?: number | null;
+}
+
+interface TeamFormFieldsProps {
+  form: TeamForm;
+  setForm: React.Dispatch<React.SetStateAction<TeamForm>>;
+}
+
+
+export const TeamFormFields: React.FC<TeamFormFieldsProps> = ({ form, setForm }) => (
   <div className="grid md:grid-cols-2 gap-6">
     <div className="space-y-2">
       <Label className="text-sm font-medium">Nom de l&apos;équipe *</Label>
@@ -34,10 +51,19 @@ export const TeamFormFields: React.FC<{ form: any; setForm: (form: any) => void 
         placeholder="https://..."
         className="h-11"
       />
+
       {form.flag_url && (
         <div className="mt-2 p-3 bg-slate-100 dark:bg-slate-800 rounded-lg">
           <p className="text-xs text-muted-foreground mb-2">Aperçu :</p>
-          <img src={form.flag_url} alt="Drapeau" className="w-16 h-10 object-cover rounded shadow" />
+          <div className="relative w-16 h-10">
+            <Image
+              src={form.flag_url}
+              alt="Drapeau"
+              fill
+              className="object-cover rounded shadow"
+              sizes="64px"
+            />
+          </div>
         </div>
       )}
     </div>

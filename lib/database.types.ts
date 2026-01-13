@@ -22,8 +22,8 @@ export interface Database {
         };
         Insert: {
           id?: string;
-          name: string;
-          code: string;
+          name?: string;
+          code?: string;
           flag_url?: string | null;
           group_name?: string | null;
           fifa_points_before?: number;
@@ -61,7 +61,7 @@ export interface Database {
           away_team_id?: string | null;
           home_score?: number;
           away_score?: number;
-          match_date: string;
+          match_date?: string;
           phase?: string;
           stadium?: string | null;
           status?: string;
@@ -141,8 +141,8 @@ export interface Database {
         };
         Insert: {
           id?: string;
-          firstname: string;
-          lastname: string; 
+          firstname?: string;
+          lastname?: string; 
           team_id?: string | null;
           position?: string | null;
           number?: number | null;

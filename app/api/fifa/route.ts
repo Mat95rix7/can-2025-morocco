@@ -4,6 +4,33 @@ import path from 'path';
 
 const rankingsPath = path.join(process.cwd(), 'data', 'rankings.json');
 
+interface RankingDateItem {
+  id: string;
+  iso: string;
+  dateText: string;
+  matchWindowEndDate: string;
+}
+
+interface YearGroup {
+  year: string;
+  dates: RankingDateItem[];
+}
+
+interface RankingItem {
+  rank: number;
+  previousRank?: number;
+  name: string;
+  countryCode: string;
+  points: number;
+  previousPoints?: number;
+  flag: string;
+  countryURL: string;
+  confederation: string;
+}
+
+
+
+
 // Fonction pour charger un fichier JSON de manière sûre
 function loadJSON(filePath: string) {
   try {
@@ -39,7 +66,8 @@ async function getLatestDateId(): Promise<string | null> {
     
     // Trier par année décroissante pour garantir qu'on a la plus récente
     // (normalement déjà trié, mais par sécurité)
-    datesByYear.sort((a: any, b: any) => parseInt(b.year) - parseInt(a.year));
+    datesByYear.sort((a: YearGroup, b: YearGroup) => parseInt(b.year) - parseInt(a.year));
+    console.log('datesByYear :', datesByYear);
     
     // Prendre l'année la plus récente
     const latestYear = datesByYear[0];
@@ -92,16 +120,16 @@ export async function GET() {
     console.log('📊 Nouveau classement FIFA détecté, mise à jour...');
 
     // 4. Mapper les données (previousRank est déjà fourni par l'API)
-    const rankings = data.rankings.map((item: any) => ({
-      rank: item.rankingItem.rank,
-      previousRank: item.rankingItem.previousRank,
-      name: item.rankingItem.name,
-      countryCode: item.rankingItem.countryCode,
-      points: item.rankingItem.totalPoints,
+    const rankings = data.rankings.map((item: RankingItem) => ({
+      rank: item.rank,
+      previousRank: item.previousRank,
+      name: item.name,
+      countryCode: item.countryCode,
+      // points: item.totalPoints,
       previousPoints: item.previousPoints,
-      flag: item.rankingItem.flag.src,
-      countryURL: `https://inside.fifa.com${item.rankingItem.countryURL}`,
-      confederation: item.tag.text
+      // flag: item.flag.src,
+      countryURL: `https://inside.fifa.com${item.countryURL}`,
+      confederation: item.confederation
     }));
 
     const newData = { 

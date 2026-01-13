@@ -25,7 +25,7 @@ export const useAdminData = () => {
       setMatches(matchesData);
       setTeams(teamsData);
       setPlayers(playersData);
-    } catch (err: any) {
+    } catch (err) {
       console.error('Erreur chargement:', err);
       setError('Erreur lors du chargement des données');
     } finally {

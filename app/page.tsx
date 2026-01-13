@@ -3,6 +3,7 @@ import { Calendar, Trophy, TrendingUp, Users } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { supabaseServer } from '@/lib/supabase/server';
+import { Match } from '@/types/types';
 
 async function getOverviewData() {
   const supabase = await supabaseServer();
@@ -86,7 +87,7 @@ export default async function Home() {
           <CardContent>
             {upcomingMatches.length > 0 ? (
               <div className="space-y-4">
-                {upcomingMatches.map((match: any) => (
+                {upcomingMatches.map((match: Match) => (
                   <div key={match.id} className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
                     <div className="flex items-center gap-4 flex-1">
                       <div className="text-right flex-1">

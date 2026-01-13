@@ -7,7 +7,7 @@ const getClient = () => supabaseBrowser();
 type MatchInsert = Database['public']['Tables']['matches']['Insert'];
 
 class CacheService {
-  private cache = new Map<string, { data: any; timestamp: number }>();
+  private cache = new Map<string, { data: unknown; timestamp: number }>();
   private ttl = 5 * 60 * 1000; // 5 minutes
 
   get<T>(key: string): T | null {
@@ -23,8 +23,12 @@ class CacheService {
     return cached.data as T;
   }
 
-  set(key: string, data: any): void {
-    this.cache.set(key, { data, timestamp: Date.now() });
+
+  set<T>(key: string, data: T): void {
+    this.cache.set(key, {
+      data,
+      timestamp: Date.now(),
+    });
   }
 
   clear(prefix?: string): void {

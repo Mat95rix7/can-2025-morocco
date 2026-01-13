@@ -6,7 +6,7 @@ import { ArrowLeft, Users, Trophy, Target, Shield, MapPin, Calendar, Ruler, Cale
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Player } from '@/types/types';
+import { Match, Player } from '@/types/types';
 
 async function getTeam(teamId: string) {
   const supabase = await supabaseServer();
@@ -58,10 +58,11 @@ async function getTeamStats(teamId: string) {
     goalsAgainst: 0
   };
 
-  matches?.forEach((match: any) => {
+  matches?.forEach((match: Match) => {
+    if (!match.home_score && !match.away_score) return;
     const isHome = match.home_team_id === teamId;
-    const teamScore = isHome ? match.home_score : match.away_score;
-    const opponentScore = isHome ? match.away_score : match.home_score;
+    const teamScore = isHome ? match.home_score || 0 : match.away_score || 0;
+    const opponentScore = isHome ? match.away_score || 0 : match.home_score || 0;
 
     stats.goalsFor += teamScore;
     stats.goalsAgainst += opponentScore;
@@ -135,223 +136,12 @@ export default async function TeamDetailPage({
     }
     acc[pos].push(player);
     return acc;
-  }, {} as Record<string, any[]>);
+  }, {} as Record<string, Player[]>);
 
   const positionOrder = ['GK', 'DF', 'MF', 'FW'];
   const sortedPositions = positionOrder.filter(pos => groupedPlayers[pos]);
   const goalDifference = stats.goalsFor - stats.goalsAgainst;
 
-//   return (
-//     <div className="min-h-screen bg-linear-to-b from-background to-muted/20">
-//       <div className="container mx-auto px-4 py-6 max-w-7xl">
-//         <Link href="/teams">
-//           <Button variant="ghost" size="sm" className="mb-4">
-//             <ArrowLeft className="h-4 w-4 mr-2" />
-//             Retour
-//           </Button>
-//         </Link>
-
-//         {/* Header moderne avec gradient */}
-//         <Card className="mb-6 overflow-hidden border-2">
-//           <div className="bg-linear-to-r from-primary/5 via-primary/10 to-primary/5 p-6">
-//             <div className="flex items-start gap-6">
-//               <div className="relative">
-//                 {team.flag_url ? (
-//                   <div className="relative w-20 h-20 rounded-xl overflow-hidden shadow-lg ring-4 ring-background">
-//                     <Image
-//                       src={team.flag_url}
-//                       alt={`${team.name} flag`}
-//                       fill
-//                       className="object-cover"
-//                     />
-//                   </div>
-//                 ) : (
-//                   <div className="text-6xl">🏳️</div>
-//                 )}
-//               </div>
-              
-//               <div className="flex-1">
-//                 <div className="flex flex-wrap items-center gap-3 mb-2">
-//                   <h1 className="text-3xl font-bold">{team.name}</h1>
-//                   <Badge variant="outline" className="text-sm">
-//                     {team.code}
-//                   </Badge>
-//                   {team.group_name && (
-//                     <Badge className="bg-primary text-sm">
-//                       Groupe {team.group_name}
-//                     </Badge>
-//                   )}
-//                 </div>
-                
-//                 {/* Stats inline */}
-//                 <div className="flex flex-wrap gap-6 mt-4 text-sm">
-//                   <div className="flex items-center gap-2">
-//                     <Trophy className="h-4 w-4 text-muted-foreground" />
-//                     <span className="text-muted-foreground">Rang FIFA:</span>
-//                     <span className="font-bold">{team.fifa_rank_before || 'N/A'}</span>
-//                   </div>
-//                   <div className="flex items-center gap-2">
-//                     <Target className="h-4 w-4 text-muted-foreground" />
-//                     <span className="text-muted-foreground">Points:</span>
-//                     <span className="font-bold">{team.fifa_points_before || 0}</span>
-//                   </div>
-//                   <div className="flex items-center gap-2">
-//                     <span className="text-muted-foreground">Bilan:</span>
-//                     <span className="font-bold">
-//                       {stats.wins}V-{stats.draws}N-{stats.losses}D
-//                     </span>
-//                   </div>
-//                   <div className="flex items-center gap-2">
-//                     <span className="text-muted-foreground">Buts:</span>
-//                     <span className="font-bold">
-//                       {stats.goalsFor}:{stats.goalsAgainst}
-//                       <span className="text-xs ml-1 text-muted-foreground">
-//                         ({goalDifference > 0 ? '+' : ''}{goalDifference})
-//                       </span>
-//                     </span>
-//                   </div>
-//                 </div>
-//               </div>
-
-//               <div className="text-right">
-//                 <div className="flex items-center gap-2 text-muted-foreground mb-1">
-//                   <Users className="h-4 w-4" />
-//                   <span className="text-sm">Effectif</span>
-//                 </div>
-//                 <div className="text-3xl font-bold">{players.length}</div>
-//               </div>
-//             </div>
-//           </div>
-//         </Card>
-
-//         {/* Liste des joueurs par position */}
-//         {players.length === 0 ? (
-//           <Card>
-//             <CardContent className="py-12 text-center text-muted-foreground">
-//               Aucun joueur enregistré pour cette équipe
-//             </CardContent>
-//           </Card>
-//         ) : (
-//           <div className="space-y-6">
-//             {sortedPositions.map((position) => {
-//               const config = positionConfig[position as keyof typeof positionConfig];
-//               const Icon = config?.icon || Users;
-              
-//               return (
-//                 <Card key={position} className="overflow-hidden">
-//                   <div className={`px-6 py-3 border-b flex items-center justify-between ${config?.color}`}>
-//                     <div className="flex items-center gap-3">
-//                       <Icon className="h-5 w-5" />
-//                       <h2 className="text-lg font-bold">
-//                         {config?.label || position}
-//                       </h2>
-//                     </div>
-//                     <Badge variant="secondary">
-//                       {groupedPlayers[position].length}
-//                     </Badge>
-//                   </div>
-                  
-//                   <CardContent className="p-4">
-//                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-//                       {groupedPlayers[position].map((player: any) => {
-//                         const age = calculateAge(player.birth_date);
-                        
-//                         return (
-//                           <Card
-//                             key={player.id}
-//                             className="group relative overflow-hidden hover:shadow-lg transition-all"
-//                           >
-//                             <CardContent className="p-0">
-//                               {/* Header avec photo et numéro */}
-//                               <div className="relative h-32 bg-linear-to-br from-primary/5 to-primary/10">
-//                                 {player.photo ? (
-//                                   <div className="absolute inset-0">
-//                                     <Image
-//                                       src={player.photo}
-//                                       alt={player.name}
-//                                       fill
-//                                       className="object-cover object-top opacity-80 group-hover:opacity-100 transition-opacity"
-//                                     />
-//                                     <div className="absolute inset-0 bg-linear-to-t from-background/80 to-transparent" />
-//                                   </div>
-//                                 ) : (
-//                                   <div className="absolute inset-0 flex items-center justify-center">
-//                                     <Users className="h-16 w-16 text-muted-foreground/20" />
-//                                   </div>
-//                                 )}
-                                
-//                                 {/* Numéro en haut à droite */}
-//                                 {player.number && (
-//                                   <div className={`absolute top-3 right-3 w-12 h-12 rounded-full ${config?.badgeColor} flex items-center justify-center font-bold text-xl shadow-lg`}>
-//                                     {player.number}
-//                                   </div>
-//                                 )}
-//                               </div>
-
-//                               {/* Infos joueur */}
-//                               <div className="p-4">
-//                                 <h3 className="font-bold text-lg mb-1 truncate text-blue-400">
-//                                   {player.firstname}{' '}{player.lastname}
-//                                 </h3>
-                                
-//                                 {/* Club */}
-//                                 {player.club && (
-//                                   <div className="flex items-center gap-1.5 text-sm text-muted-foreground mb-3">
-//                                     <svg className="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-//                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-//                                     </svg>
-//                                     <span className="truncate font-medium">{player.club}</span>
-//                                   </div>
-//                                 )}
-
-//                                 {/* Infos détaillées */}
-//                                 <div className="space-y-2 text-xs">
-//                                   {age && (
-//                                     <div className="flex items-center gap-2 text-muted-foreground">
-//                                       <Calendar className="h-3.5 w-3.5 shrink-0" />
-//                                       <span>{age} ans</span>{' - '}
-//                                       {player.birth_date && (
-//                                         <span className="text-muted-foreground/60">
-//                                           {new Date(player.birth_date).toLocaleDateString('fr-FR', { 
-//                                             day: '2-digit', 
-//                                             month: '2-digit', 
-//                                             year: 'numeric' 
-//                                           })}
-//                                         </span>
-//                                       )}
-//                                     </div>
-//                                   )}
-                                  
-//                                   {player.birth_place && (
-//                                     <div className="flex items-center gap-2 text-muted-foreground">
-//                                       <MapPin className="h-3.5 w-3.5 shrink-0" />
-//                                       <span className="truncate">{player.birth_place}</span>
-//                                     </div>
-//                                   )}
-                                  
-//                                   {player.height && (
-//                                     <div className="flex items-center gap-2 text-muted-foreground">
-//                                       <Ruler className="h-3.5 w-3.5 shrink-0" />
-//                                       <span>{player.height.toFixed(2)} cm</span>
-//                                     </div>
-//                                   )}
-//                                 </div>
-//                               </div>
-//                             </CardContent>
-//                           </Card>
-//                         );
-//                       })}
-//                     </div>
-//                   </CardContent>
-//                 </Card>
-//               );
-//             })}
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// }
 return (
   <div className="min-h-screen bg-linear-to-b from-background via-muted/10 to-muted/30">
     <div className="container mx-auto px-4 py-6 max-w-7xl">

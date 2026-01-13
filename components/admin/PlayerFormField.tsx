@@ -3,8 +3,27 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Team } from "@/types/types";
+import Image from "next/image";
 
-export const PlayerFormFields: React.FC<{ form: any; setForm: (form: any) => void; teams: Team[] }> = ({ form, setForm, teams }) => (
+export interface PlayerForm {
+  firstname?: string;
+  lastname?: string;
+  team_id?: string;
+  position?: string;
+  number?: number;
+}
+
+interface PlayerFormFieldsProps {
+  form: PlayerForm;
+  setForm: React.Dispatch<React.SetStateAction<PlayerForm>>;
+  teams: Team[];
+}
+
+export const PlayerFormFields: React.FC<PlayerFormFieldsProps> = ({
+  form,
+  setForm,
+  teams,
+}) => (
   <div className="grid md:grid-cols-2 gap-6">
     <div className="space-y-2 md:col-span-2">
       <Label className="text-sm font-medium">Nom du joueur *</Label>
@@ -27,15 +46,29 @@ export const PlayerFormFields: React.FC<{ form: any; setForm: (form: any) => voi
 
     <div className="space-y-2">
       <Label className="text-sm font-medium">Équipe *</Label>
-      <Select value={form.team_id || ''} onValueChange={(v) => setForm({ ...form, team_id: v })}>
+      <Select
+        value={form.team_id || ''}
+        onValueChange={(v) => setForm({ ...form, team_id: v })}
+      >
         <SelectTrigger className="h-11">
           <SelectValue placeholder="Sélectionner une équipe" />
         </SelectTrigger>
+
         <SelectContent>
-          {teams.map(t => (
+          {teams.map((t) => (
             <SelectItem key={t.id} value={t.id}>
               <div className="flex items-center gap-2">
-                {t.flag_url && <img src={t.flag_url} alt="" className="w-6 h-4 object-cover rounded" />}
+                {t.flag_url && (
+                  <div className="relative w-6 h-4">
+                    <Image
+                      src={t.flag_url}
+                      alt={`Drapeau ${t.name}`}
+                      fill
+                      sizes="24px"
+                      className="object-cover rounded"
+                    />
+                  </div>
+                )}
                 <span>{t.name}</span>
               </div>
             </SelectItem>

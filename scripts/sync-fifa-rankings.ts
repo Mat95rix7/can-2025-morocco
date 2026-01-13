@@ -2,7 +2,6 @@
 // Système d'actualisation automatique du classement FIFA
 
 import { supabaseBrowser } from "@/lib/supabase/browser";
-import { get } from "http";
 
 // URL de l'API FIFA (à adapter selon la vraie API)
 const FIFA_API_URL = 'https://api.fifa.com/api/v3/ranking/men';

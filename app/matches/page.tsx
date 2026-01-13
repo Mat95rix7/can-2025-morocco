@@ -2,8 +2,11 @@ import { supabaseServer } from '@/lib/supabase/server';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MatchCard } from '@/components/MatchCard';
+import { Match } from '@/types/types';
 
-async function getMatches() {
+type PhaseType = 'group' | 'round_16' | 'quarter' | 'semi' | 'final';
+
+async function getMatches(): Promise<Match[]> {
   const supabase = await supabaseServer();
   const { data, error } = await supabase
     .from('matches')
@@ -19,7 +22,7 @@ async function getMatches() {
     return [];
   }
 
-  return data || [];
+  return (data as Match[]) || [];
 }
 
 function getPhaseLabel(phase: string): string {
@@ -33,10 +36,21 @@ function getPhaseLabel(phase: string): string {
   return labels[phase] || phase;
 }
 
+function getPhaseLabelShort(phase: string): string {
+  const labels: Record<string, string> = {
+    group: 'Groupes',
+    round_16: '8èmes',
+    quarter: 'Quarts',
+    semi: 'Demi',
+    final: 'Finale'
+  };
+  return labels[phase] || phase;
+}
+
 export default async function MatchesPage() {
   const matches = await getMatches();
 
-  const groupedByPhase = matches.reduce((acc: any, match: any) => {
+  const groupedByPhase = matches.reduce((acc: Record<string, Match[]>, match: Match) => {
     if (!acc[match.phase]) {
       acc[match.phase] = [];
     }
@@ -44,38 +58,32 @@ export default async function MatchesPage() {
     return acc;
   }, {});
 
-  const phases = ['group', 'round_16', 'quarter', 'semi', 'final'];
+  const phases: PhaseType[] = ['group', 'round_16', 'quarter', 'semi', 'final'];
 
   return (
     <div className="min-h-screen bg-linear-to-br from-background via-muted/20 to-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
-        {/* Header avec gradient moderne */}
+      <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 lg:py-12">
+        {/* Header */}
         <div className="mb-6 sm:mb-8 lg:mb-12 text-center sm:text-left">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold mb-2 sm:mb-4 bg-linear-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-2 sm:mb-4 bg-linear-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
             Calendrier des matchs
           </h1>
-          <p className="text-sm sm:text-base lg:text-lg text-muted-foreground">
+          <p className="text-xs sm:text-sm md:text-base lg:text-lg text-muted-foreground">
             Tous les matchs de la CAN 2025 🏆
           </p>
         </div>
 
         {/* Tabs responsive */}
         <Tabs defaultValue="group" className="space-y-4 sm:space-y-6 lg:space-y-8">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 h-auto p-1 sm:p-2 bg-muted/50">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1 sm:gap-2 h-auto p-1 sm:p-2 bg-muted/50">
             {phases.map((phase) => (
               <TabsTrigger 
                 key={phase} 
                 value={phase}
-                className="text-xs sm:text-sm lg:text-base py-2 sm:py-3 data-[state=active]:bg-linear-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white transition-all duration-300"
+                className="text-xs sm:text-sm lg:text-base py-2 sm:py-2.5 lg:py-3 data-[state=active]:bg-linear-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white transition-all duration-300"
               >
                 <span className="hidden sm:inline">{getPhaseLabel(phase)}</span>
-                <span className="sm:hidden">
-                  {phase === 'group' ? 'Groupes' : 
-                   phase === 'round_16' ? '8èmes' : 
-                   phase === 'quarter' ? 'Quarts' : 
-                   phase === 'semi' ? 'Demi' : 
-                   'Finale'}
-                </span>
+                <span className="sm:hidden">{getPhaseLabelShort(phase)}</span>
               </TabsTrigger>
             ))}
           </TabsList>
@@ -84,10 +92,10 @@ export default async function MatchesPage() {
             <TabsContent 
               key={phase} 
               value={phase} 
-              className="grid grid-cols-[repeat(auto-fit,minmax(600px,1fr))] gap-3 sm:gap-4 lg:gap-10 mt-4 sm:mt-6 max-w-7xl mx-auto"
+              className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-8 mt-4 sm:mt-6"
             >
               {groupedByPhase[phase] && groupedByPhase[phase].length > 0 ? (
-                groupedByPhase[phase].map((match: any) => (
+                groupedByPhase[phase].map((match: Match) => (
                   <MatchCard key={match.id} match={match} />
                 ))
               ) : (

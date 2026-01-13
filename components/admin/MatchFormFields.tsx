@@ -3,25 +3,58 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { GROUPS, OFFICIAL_STADIUMS, PHASES, STATUSES } from "@/types/constants";
+import Image from "next/image";
+
+export interface MatchForm {
+  home_team_id: string | null;
+  away_team_id: string | null;
+  home_score?: number;
+  away_score?: number;
+  match_date: string;
+  phase?: string;
+  stadium?: string | null;
+  status?: string;
+  group_name?: string | null;
+}
+
+interface MatchFormFieldsProps {
+  form: MatchForm;
+  setForm: React.Dispatch<React.SetStateAction<MatchForm>>;
+  teams: Team[];
+}
 
 // Form Fields Component
-export const MatchFormFields: React.FC<{
-  form: any;
-  setForm: (form: any) => void;
-  teams: Team[];
-}> = ({ form, setForm, teams }) => (
+export const MatchFormFields: React.FC<MatchFormFieldsProps> = ({
+  form,
+  setForm,
+  teams,
+}) => (
   <div className="grid md:grid-cols-2 gap-6">
     <div className="space-y-2">
       <Label className="text-sm font-medium">Équipe domicile *</Label>
-      <Select value={form.home_team_id || ''} onValueChange={(v) => setForm({ ...form, home_team_id: v })}>
+      <Select
+        value={form.home_team_id || ''}
+        onValueChange={(v) => setForm({ ...form, home_team_id: v })}
+      >
         <SelectTrigger className="h-11">
           <SelectValue placeholder="Sélectionner une équipe" />
         </SelectTrigger>
+
         <SelectContent>
-          {teams.map(t => (
+          {teams.map((t) => (
             <SelectItem key={t.id} value={t.id}>
               <div className="flex items-center gap-2">
-                {t.flag_url && <img src={t.flag_url} alt="" className="w-6 h-4 object-cover rounded" />}
+                {t.flag_url && (
+                  <div className="relative w-6 h-4">
+                    <Image
+                      src={t.flag_url}
+                      alt={`Drapeau ${t.name}`}
+                      fill
+                      sizes="24px"
+                      className="object-cover rounded"
+                    />
+                  </div>
+                )}
                 <span>{t.name}</span>
               </div>
             </SelectItem>
@@ -32,15 +65,29 @@ export const MatchFormFields: React.FC<{
 
     <div className="space-y-2">
       <Label className="text-sm font-medium">Équipe extérieure *</Label>
-      <Select value={form.away_team_id || ''} onValueChange={(v) => setForm({ ...form, away_team_id: v })}>
+      <Select
+        value={form.away_team_id || ''}
+        onValueChange={(v) => setForm({ ...form, away_team_id: v })}
+      >
         <SelectTrigger className="h-11">
           <SelectValue placeholder="Sélectionner une équipe" />
         </SelectTrigger>
+
         <SelectContent>
-          {teams.map(t => (
+          {teams.map((t) => (
             <SelectItem key={t.id} value={t.id}>
               <div className="flex items-center gap-2">
-                {t.flag_url && <img src={t.flag_url} alt="" className="w-6 h-4 object-cover rounded" />}
+                {t.flag_url && (
+                  <div className="relative w-6 h-4">
+                    <Image
+                      src={t.flag_url}
+                      alt={`Drapeau ${t.name}`}
+                      fill
+                      sizes="24px"
+                      className="object-cover rounded"
+                    />
+                  </div>
+                )}
                 <span>{t.name}</span>
               </div>
             </SelectItem>

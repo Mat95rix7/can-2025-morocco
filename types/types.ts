@@ -8,7 +8,7 @@ export interface Match {
   match_date: string;
   phase: string;
   stadium: string | null;
-  status: string | null;
+  status: string;
   group_name: string | null;
   home_team?: Team | null;
   away_team?: Team | null;
