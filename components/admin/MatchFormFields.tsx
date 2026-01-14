@@ -1,13 +1,16 @@
-import { Match, Team } from "@/types/types";
+import { Team } from "@/types/types";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { GROUPS, OFFICIAL_STADIUMS, PHASES, STATUSES } from "@/types/constants";
 import Image from "next/image";
+import { Database } from "@/lib/database.types";
+
+type MatchInsert = Database['public']['Tables']['matches']['Insert'];
 
 interface MatchFormFieldsProps {
-  form: Match;
-  setForm: React.Dispatch<React.SetStateAction<Match>>;
+  form: MatchInsert;
+  setForm: React.Dispatch<React.SetStateAction<MatchInsert>>;
   teams: Team[];
 }
 

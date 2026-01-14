@@ -3,21 +3,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Image from "next/image";
+import { Database } from "@/lib/database.types";
 
-import { Team } from "@/types/types";
-
-// export interface TeamForm {
-//   name: string;
-//   code: string;
-//   flag_url?: string | null;
-//   group_name?: string | null;
-//   fifa_rank_before?: number | null;
-//   fifa_points_before?: number | null;
-// }
+type TeamInsert = Database['public']['Tables']['teams']['Insert'];
 
 interface TeamFormFieldsProps {
-  form: Team;
-  setForm: React.Dispatch<React.SetStateAction<Team>>;
+  form: TeamInsert;
+  setForm: React.Dispatch<React.SetStateAction<TeamInsert>>;
 }
 
 

@@ -16,7 +16,7 @@ export interface Database {
           code: string;
           flag_url: string | null;
           group_name: string | null;
-          fifa_points_before: number;
+          fifa_points_before: number | null;
           fifa_rank_before: number | null;
           created_at: string;
         };
@@ -36,7 +36,7 @@ export interface Database {
           code?: string;
           flag_url?: string | null;
           group_name?: string | null;
-          fifa_points_before?: number;
+          fifa_points_before?: number | null;
           fifa_rank_before?: number | null;
           created_at?: string;
         };
@@ -46,8 +46,8 @@ export interface Database {
           id: string;
           home_team_id: string | null;
           away_team_id: string | null;
-          home_score: number;
-          away_score: number;
+          home_score: number | null;
+          away_score: number | null;
           match_date: string;
           phase: string;
           stadium: string | null;
@@ -59,8 +59,8 @@ export interface Database {
           id?: string;
           home_team_id?: string | null;
           away_team_id?: string | null;
-          home_score?: number;
-          away_score?: number;
+          home_score?: number | null;
+          away_score?: number | null;
           match_date?: string;
           phase?: string;
           stadium?: string | null;
@@ -72,8 +72,8 @@ export interface Database {
           id?: string;
           home_team_id?: string | null;
           away_team_id?: string | null;
-          home_score?: number;
-          away_score?: number;
+          home_score?: number | null;
+          away_score?: number | null;
           match_date?: string;
           phase?: string;
           stadium?: string | null;
@@ -137,6 +137,11 @@ export interface Database {
           team_id: string | null;
           position: string | null;
           number: number | null;
+          club: string | null;
+          birth_date: string | null;
+          birth_place: string | null;
+          height: number | null;
+          photo: string | null;
           created_at: string;
         };
         Insert: {
@@ -146,6 +151,11 @@ export interface Database {
           team_id?: string | null;
           position?: string | null;
           number?: number | null;
+          club?: string | null;
+          birth_date?: string | null;
+          birth_place?: string | null;
+          height?: number | null;
+          photo?: string | null;
           created_at?: string;
         };
         Update: {
@@ -155,6 +165,11 @@ export interface Database {
           team_id?: string | null;
           position?: string | null;
           number?: number | null;
+          club?: string | null;
+          birth_date?: string | null;
+          birth_place?: string | null;
+          height?: number | null;
+          photo?: string | null;
           created_at?: string;
         };
       };

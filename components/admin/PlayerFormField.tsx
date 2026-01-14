@@ -2,14 +2,17 @@ import { POSITIONS } from "@/types/constants";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Player, Team } from "@/types/types";
+import { Team } from "@/types/types";
 import Image from "next/image";
+import { Database } from "@/lib/database.types";
+
+type PlayerInsert = Database['public']['Tables']['players']['Insert'];
 
 
 
 interface PlayerFormFieldsProps {
-  form: Player;
-  setForm: React.Dispatch<React.SetStateAction<Player>>;
+  form: PlayerInsert;
+  setForm: React.Dispatch<React.SetStateAction<PlayerInsert>>;
   teams: Team[];
 }
 
