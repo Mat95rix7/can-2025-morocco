@@ -38,3 +38,38 @@ export interface Player {
   height: number | null;
   photo?: string | null;
 }
+
+export type TeamWithRankings = {
+  id: string;
+  name: string;
+  code: string;
+  group_name: string | null;
+  fifa_points_before: number;
+  fifa_rank_before: number | null;
+  fifa_flag_url: string | null;
+  fifa_rank: number | null;
+  fifa_previous_rank: number | null;
+  fifa_previous_points: number | null;
+  fifa_confederation: string | null;
+  created_at: string;
+  flag_url?: string;
+};
+
+export type WorldTeam = {
+  rank: number;
+  name: string;
+  country_code: string;
+  points: number;
+  confederation: string;
+};
+
+export type TeamWithCalculations = TeamWithRankings & {
+  currentPoints: number;
+  pointsGained: number;
+  matchesPlayed: number;
+  worldRank: number;
+  initialWorldRank: number;
+  newAfricaRank: number;
+  africaRankChange: number;
+  worldRankChange: number;
+};

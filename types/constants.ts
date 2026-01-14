@@ -42,3 +42,14 @@ export const TABS = [
   { value: 'players', label: 'Joueurs', icon: UserCircle, gradient: 'from-pink-500 to-orange-600' },
   { value: 'stadiums', label: 'Stades', icon: Building2, gradient: 'from-orange-500 to-red-600' }
 ];
+
+export const PHASE_IMPORTANCE: Record<string, number> = {
+  group: 35,
+  round_of_16: 40,
+  quarter_final: 40,
+  semi_final: 40,
+  third_place: 40,
+  final: 50,
+};
+
+export const CAF_COEFFICIENT = 1.0;
