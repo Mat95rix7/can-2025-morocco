@@ -176,14 +176,14 @@ export default async function FifaRankingPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-16 text-center">Rang</TableHead>
-                      <TableHead className="w-16 text-center">Évol.</TableHead>
-                      <TableHead>Équipe</TableHead>
+                      <TableHead className="w-16 sm:w-20 text-xs sm:text-sm text-center">Rang</TableHead>
+                      <TableHead className="w-16 sm:w-20 text-xs sm:text-sm text-center">Évol.</TableHead>
+                      <TableHead className="text-xs sm:text-sm">Équipe</TableHead>
 
-                      <TableHead className="text-center">Confédération</TableHead>
-                      <TableHead className="text-center">Points</TableHead>
-                      <TableHead className="text-center">Points Précédents</TableHead>
-                      <TableHead className="text-center">Rang Prédents</TableHead>
+                      <TableHead className="text-center text-xs sm:text-sm hidden md:table-cell">Confédération</TableHead>
+                      <TableHead className="text-center text-xs sm:text-sm">Points</TableHead>
+                      <TableHead className="text-center text-xs sm:text-sm hidden lg:table-cell">Points Précédents</TableHead>
+                      <TableHead className="text-center text-xs sm:text-sm hidden lg:table-cell">Rang Prédents</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>

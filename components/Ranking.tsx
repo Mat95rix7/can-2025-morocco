@@ -210,7 +210,7 @@ export function TeamRowWorld({
           </div>
         </div>
       </TableCell>
-      <TableCell className="text-center py-3 sm:py-4">
+      <TableCell className="text-center py-3 sm:py-4 hidden md:table-cell">
           <Badge className="bg-green-600 text-xs sm:text-sm">
             {team.confederation}
           </Badge>
@@ -220,7 +220,7 @@ export function TeamRowWorld({
           {team.points.toFixed(2)}
         </span>
       </TableCell>
-      <TableCell className="text-center py-3 sm:py-4 hidden md:table-cell">
+      <TableCell className="text-center py-3 sm:py-4 hidden lg:table-cell">
         <span className="font-medium text-muted-foreground text-sm sm:text-base">
           {team.previous_points.toFixed(2)}
         </span>
