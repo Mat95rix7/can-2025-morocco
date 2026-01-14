@@ -1,159 +1,12 @@
 // app/fifa-ranking/page.tsx
 export const dynamic = 'force-dynamic'
-import { supabaseServer } from '@/lib/supabase/server';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TrendingUp, TrendingDown, Minus, Globe, MapPin } from 'lucide-react';
-import { Match, TeamWithCalculations, TeamWithRankings, WorldTeam } from '@/types/types';
-import { StatsCard, TeamRow } from '@/components/Ranking';
-import { CAF_COEFFICIENT, PHASE_IMPORTANCE } from '@/types/constants';
-
-async function getTeamsWithMatches() {
-  const supabase = await supabaseServer();
-  const { data: teams, error: teamsError } = await supabase
-    .from('teams_with_fifa_ranking')
-    .select('*')
-    .order('fifa_rank_before', { ascending: true });
-
-  if (teamsError) {
-    console.error('Error fetching teams:', teamsError);
-    return { teams: [], matches: [], worldRankings: [] };
-  }
-
-  const { data: matches, error: matchesError } = await supabase
-    .from('matches')
-    .select(`
-      id,
-      home_team_id,
-      away_team_id,
-      home_score,
-      away_score,
-      match_date,
-      phase,
-      stadium,
-      status,
-      group_name,
-      home_team:teams!matches_home_team_id_fkey(
-        id,
-        name,
-        code,
-        group_name,
-        flag_url,
-        fifa_points_before,
-        fifa_rank_before
-      ),
-      away_team:teams!matches_away_team_id_fkey(
-        id,
-        name,
-        code,
-        group_name,
-        flag_url,
-        fifa_points_before,
-        fifa_rank_before
-      )
-    `)
-    .in('status', ['finished', 'live'])
-    .returns<Match[]>();
-
-  if (matchesError) {
-    console.error('Error fetching matches:', matchesError);
-    return { teams: teams || [], matches: [], worldRankings: [] };
-  }
-
-  const { data: worldRankings, error: worldError } = await supabase
-    .from('fifa_world_rankings')
-    .select('rank, name, country_code, points, confederation')
-    .order('rank', { ascending: true });
-
-  if (worldError) console.error('Error fetching world rankings:', worldError);
-
-  const safeMatches: Match[] = (matches || []).map((m) => ({
-    ...m,
-    home_score: m.home_score ?? 0,
-    away_score: m.away_score ?? 0,
-    phase: m.phase ?? '',
-    status: m.status ?? 'unknown',
-  }));
-
-  return {
-    teams: (teams || []) as TeamWithRankings[],
-    matches: safeMatches,
-    worldRankings: (worldRankings || []) as WorldTeam[],
-  };
-}
-
-function calculateCurrentPoints(
-  team: TeamWithRankings,
-  matches: Match[]
-): { currentPoints: number; pointsGained: number; matchesPlayed: number } {
-  let pointsGained = 0;
-  let matchesPlayed = 0;
-  let currentPoints = team.fifa_points_before;
-
-  const sortedMatches = matches
-    .filter(match => match.home_team_id === team.id || match.away_team_id === team.id)
-    .slice()
-    .sort((a, b) => new Date(a.match_date).getTime() - new Date(b.match_date).getTime());
-
-  sortedMatches.forEach((match) => {
-    const isHome = match.home_team_id === team.id;
-    const isAway = match.away_team_id === team.id;
-    if (!isHome && !isAway) return;
-    if (match.home_score === null || match.away_score === null) return;
-
-    matchesPlayed++;
-
-    let result: 'win' | 'draw' | 'loss';
-    if (isHome) {
-      if (match.home_score > match.away_score) result = 'win';
-      else if (match.home_score === match.away_score) result = 'draw';
-      else result = 'loss';
-    } else {
-      if (match.away_score > match.home_score) result = 'win';
-      else if (match.away_score === match.home_score) result = 'draw';
-      else result = 'loss';
-    }
-
-    const opponentPoints = isHome
-      ? match.away_team?.fifa_points_before || 1500
-      : match.home_team?.fifa_points_before || 1500;
-
-    const W_actual = result === 'win' ? 1 : result === 'draw' ? 0.5 : 0;
-    const I = PHASE_IMPORTANCE[match.phase] || 35;
-    const W_expected = 1 / (10 ** ((opponentPoints - currentPoints) / 600) + 1);
-    let matchPoints = I * (W_actual - W_expected) * CAF_COEFFICIENT;
-
-    matchPoints = Math.round(matchPoints * 100) / 100;
-    pointsGained += matchPoints;
-    currentPoints = Math.round((currentPoints + matchPoints) * 100) / 100;
-  });
-
-  return {
-    currentPoints,
-    pointsGained: Math.round(pointsGained * 100) / 100,
-    matchesPlayed
-  };
-}
-
-function calculateWorldRank(
-  teamCode: string,
-  currentPoints: number,
-  worldRankings: WorldTeam[]
-): { worldRank: number; initialWorldRank: number } {
-  const initialTeam = worldRankings.find((t) => t.country_code === teamCode);
-  const initialWorldRank = initialTeam?.rank || 0;
-
-  let worldRank = 1;
-  for (const team of worldRankings) {
-    if (team.country_code === teamCode) continue;
-    if (currentPoints >= team.points) break;
-    worldRank++;
-  }
-
-  return { worldRank, initialWorldRank };
-}
-
+import { TeamWithCalculations } from '@/types/types';
+import { StatsCard, TeamRow, TeamRowWorld } from '@/components/Ranking';
+import { calculateCurrentPoints, calculateWorldRank, getTeamsWithMatches } from '@/lib/ranking';
 
 export default async function FifaRankingPage() {
   const { teams, matches, worldRankings } = await getTeamsWithMatches();
@@ -228,15 +81,20 @@ export default async function FifaRankingPage() {
         </CardHeader>
         <CardContent className="px-2 sm:px-6">
           <Tabs defaultValue="africa" className="w-full">
-            <TabsList className="grid grid-cols-2 gap-2 sm:gap-4 lg:gap-8 mb-4 sm:mb-6 w-full sm:w-4/5 lg:w-1/2 mx-auto">
+            <TabsList className="grid grid-cols-3 gap-2 sm:gap-4 lg:gap-8 mb-4 sm:mb-6 w-full sm:w-4/5 lg:w-1/2 mx-auto">
               <TabsTrigger value="africa" className="flex items-center gap-1 sm:gap-2 bg-slate-900 hover:bg-slate-800 text-xs sm:text-sm">
                 <MapPin className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="hidden xs:inline">Classement Africain</span>
-                <span className="xs:hidden">CAF</span>
+                <span className="xs:hidden">Live CAF</span>
               </TabsTrigger>
               <TabsTrigger value="world" className="flex items-center gap-1 sm:gap-2 bg-slate-900 hover:bg-slate-800 text-xs sm:text-sm">
                 <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="hidden xs:inline">Rang Mondial</span>
+                <span className="xs:hidden">Live FIFA</span>
+              </TabsTrigger>
+              <TabsTrigger value="world-full" className="flex items-center gap-1 sm:gap-2 bg-slate-900 hover:bg-slate-800 text-xs sm:text-sm">
+                <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden xs:inline">Classement Mondial</span>
                 <span className="xs:hidden">FIFA</span>
               </TabsTrigger>
             </TabsList>
@@ -312,6 +170,31 @@ export default async function FifaRankingPage() {
                 </p>
               )}
             </TabsContent>
+            {/* NOUVEL Onglet 3: World Full */}
+            <TabsContent value="world-full">
+              <div className="overflow-x-auto -mx-2 sm:mx-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-16 text-center">Rang</TableHead>
+                      <TableHead className="w-16 text-center">Évol.</TableHead>
+                      <TableHead>Équipe</TableHead>
+
+                      <TableHead className="text-center">Confédération</TableHead>
+                      <TableHead className="text-center">Points</TableHead>
+                      <TableHead className="text-center">Points Précédents</TableHead>
+                      <TableHead className="text-center">Rang Prédents</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {worldRankings.map((team) => (
+                        <TeamRowWorld key={team.name} team={team} view="world-full" africaRanksBefore={africaRanksBefore} />
+                      ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </TabsContent>
+
           </Tabs>
         </CardContent>
       </Card>

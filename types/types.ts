@@ -56,11 +56,15 @@ export type TeamWithRankings = {
 };
 
 export type WorldTeam = {
+  id: string;
   rank: number;
   name: string;
   country_code: string;
   points: number;
   confederation: string;
+  flag_url: string | null;
+  previous_rank: number;
+  previous_points: number;
 };
 
 export type TeamWithCalculations = TeamWithRankings & {

@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Minus, TrendingDown, TrendingUp } from "lucide-react";
-import { TeamWithCalculations } from "@/types/types";
+import { TeamWithCalculations, WorldTeam } from "@/types/types";
 
 function RankingBadge({ change, type }: { change: number; type: string }) {
   if (type === 'up') {
@@ -64,7 +64,7 @@ export function TeamRow({
   africaRanksBefore
 }: { 
   team: TeamWithCalculations; 
-  view: 'africa' | 'world';
+  view: 'africa' | 'world' | 'world-full';
   africaRanksBefore: Record<string, number>;
 }) {
   const changeType = view === 'africa' 
@@ -149,6 +149,85 @@ export function TeamRow({
           )}
         </TableCell>
       )}
+    </TableRow>
+  );
+}
+
+export function TeamRowWorld({ 
+  team, 
+  view,
+  africaRanksBefore
+}: { 
+  team: WorldTeam; 
+  view: 'africa' | 'world' | 'world-full';
+  africaRanksBefore: Record<string, number>;
+}) {
+
+  const previousRank = team.previous_rank ?? team.rank
+  const change = Math.abs(team.rank - previousRank)
+
+  const type =
+  team.rank < previousRank
+    ? 'up'
+    : team.rank > previousRank
+    ? 'down'
+    : 'stable'
+
+
+  return (
+    <TableRow className="hover:bg-muted/50">
+      <TableCell className="font-bold text-base sm:text-lg py-3 sm:py-4 ">
+        <div className="flex items-center justify-center gap-1 sm:gap-2">
+          <span>#{team.rank}</span>
+        </div>
+      </TableCell>
+      <TableCell className="py-3 sm:py-4 text-center">
+        <RankingBadge change={change} type={type} />
+      </TableCell>
+      <TableCell className="py-3 sm:py-4">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="w-8 h-6 sm:w-12 sm:h-8 relative shrink-0">
+            {team?.flag_url ? (
+              <Image
+                src={team.flag_url}
+                alt={`${team.name} flag`}
+                fill
+                className="object-cover rounded"
+                unoptimized
+              />
+            ) : (
+              <span className="text-xl sm:text-2xl">🏳️</span>
+            )}
+          </div>
+          <div className="min-w-0">
+            <p className="font-medium text-sm sm:text-base truncate">{team.name}</p>
+            <p className="text-xs text-muted-foreground hidden sm:block">
+              {team.country_code} • Rang initial {view === 'africa' ? 'CAF' : 'FIFA'}: #{view === 'africa' ? africaRanksBefore[team.id] : team.previous_rank}
+            </p>
+            <p className="text-xs text-muted-foreground sm:hidden">
+              {team.country_code}
+            </p>
+          </div>
+        </div>
+      </TableCell>
+      <TableCell className="text-center py-3 sm:py-4">
+          <Badge className="bg-green-600 text-xs sm:text-sm">
+            {team.confederation}
+          </Badge>
+      </TableCell>    
+      <TableCell className="text-center py-3 sm:py-4">
+        <span className="font-bold text-base sm:text-lg text-primary">
+          {team.points.toFixed(2)}
+        </span>
+      </TableCell>
+      <TableCell className="text-center py-3 sm:py-4 hidden md:table-cell">
+        <span className="font-medium text-muted-foreground text-sm sm:text-base">
+          {team.previous_points.toFixed(2)}
+        </span>
+      </TableCell>
+      <TableCell className="text-center py-3 sm:py-4 hidden lg:table-cell">
+        <Badge variant="outline" className="text-xs sm:text-sm">#{team.previous_rank}</Badge>
+      </TableCell>
     </TableRow>
   );
 }
