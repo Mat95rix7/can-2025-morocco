@@ -22,6 +22,7 @@ import { MatchFormFields } from '@/components/admin/MatchFormFields';
 import { TeamFormFields } from '@/components/admin/TeamFormField';
 import { PlayerFormFields } from '@/components/admin/PlayerFormField';
 import { Database } from '@/lib/database.types';
+import { match } from 'assert';
 
 // ==================== TYPES DE FORMULAIRES ====================
 type MatchInsert = Database['public']['Tables']['matches']['Insert'];
@@ -190,6 +191,7 @@ export default function AdminPage() {
     );
   }, []);
 
+
   const closeDialog = useCallback(() => {
     setDialogOpen(false);
     setEditing(null);
@@ -198,69 +200,6 @@ export default function AdminPage() {
     setPlayerForm(initialPlayer);
     setError('');
   }, [setError]);
-
-    const handleSubmit = useCallback(async () => {
-    setLoading(true);
-    setError('');
-
-    try {
-      if (tab === 'matches') {
-        if (editing) await matchService.update(editing.id, matchForm);
-        else await matchService.create(matchForm);
-        setMatches(await matchService.getAll());
-      } else if (tab === 'teams') {
-        if (editing) await teamService.update(editing.id, teamForm);
-        else await teamService.create(teamForm);
-        setTeams(await teamService.getAll());
-      } else if (tab === 'players') {
-        if (editing) await playerService.update(editing.id, playerForm);
-        else await playerService.create(playerForm);
-        setPlayers(await playerService.getAll());
-      }
-      closeDialog();
-    } catch (err) {
-      setError((err as Error).message || 'Une erreur est survenue');
-    } finally {
-      setLoading(false);
-    }
-  }, [tab, matchForm, teamForm, playerForm, editing, closeDialog, setMatches, setTeams, setPlayers, setLoading, setError]);
-
-  const handleDelete = useCallback(async () => {
-    if (!deleting) return;
-    setLoading(true);
-    try {
-      if (tab === 'matches') await matchService.delete(deleting);
-      else if (tab === 'teams') await teamService.delete(deleting);
-      else if (tab === 'players') await playerService.delete(deleting);
-      
-      // Refresh data
-      if (tab === 'matches') setMatches(await matchService.getAll());
-      if (tab === 'teams') setTeams(await teamService.getAll());
-      if (tab === 'players') setPlayers(await playerService.getAll());
-      
-      setDeleteOpen(false);
-      setDeleting(null);
-    } catch (err) {
-      console.error('Erreur suppression:', err);
-      setError('Erreur de suppression. L\'élément est probablement lié à d\'autres données.');
-    } finally {
-      setLoading(false);
-    }
-  }, [deleting, tab, setMatches, setTeams, setPlayers, setLoading, setError]);
-
-    const openEdit = useCallback((item: Match | Team | Player) => {
-    setEditing(item);
-    setError('');
-
-    if (tab === 'matches' && 'home_team_id' in item) {
-      setMatchForm({ ...item, match_date: item.match_date?.slice(0, 16) });
-    } else if (tab === 'teams' && 'code' in item) {
-      setTeamForm({ ...item });
-    } else if (tab === 'players' && 'firstname' in item) {
-      setPlayerForm({ ...item });
-    }
-    setDialogOpen(true);
-  }, [tab, setError]);
 
     const openCreate = useCallback(() => {
     setEditing(null);
@@ -275,6 +214,144 @@ export default function AdminPage() {
     setDeleting(id);
     setDeleteOpen(true);
   }, []);
+
+    const handleSubmit = useCallback(async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      if (tab === 'matches') {
+        const data: MatchInsert = {
+          home_team_id: matchForm.home_team_id || null,
+          away_team_id: matchForm.away_team_id || null,
+          home_score: matchForm.home_score || 0,
+          away_score: matchForm.away_score || 0,
+          match_date: matchForm.match_date,
+          phase: matchForm.phase || 'group',
+          stadium: matchForm.stadium || null,
+          status: matchForm.status || 'scheduled',
+          group_name: matchForm.group_name || null
+        };
+
+        if (editing && 'home_team_id' in editing) {
+          await matchService.update(editing.id, data);
+        } else {
+          await matchService.create(data);
+        }
+        const updatedMatches = await matchService.getAll();
+        setMatches(updatedMatches);
+      } else if (tab === 'teams') {
+        const data: TeamInsert = {
+          name: teamForm.name,
+          code: teamForm.code,
+          flag_url: teamForm.flag_url || null,
+          group_name: teamForm.group_name || null,
+          fifa_points_before: teamForm.fifa_points_before,
+          fifa_rank_before: teamForm.fifa_rank_before || null,
+        };
+
+        if (editing && 'code' in editing) {
+          await teamService.update(editing.id, data);
+        } else {
+          await teamService.create(data);
+        }
+        const updatedTeams = await teamService.getAll();
+        setTeams(updatedTeams);
+      } else if (tab === 'players') {
+        const data: PlayerInsert = {
+          firstname: playerForm.firstname,
+          lastname: playerForm.lastname,
+          team_id: playerForm.team_id || null,
+          position: playerForm.position || null,
+          number: playerForm.number || null
+        };
+
+        if (editing && 'firstname' in editing) {
+          await playerService.update(editing.id, data);
+        } else {
+          await playerService.create(data);
+        }
+        const updatedPlayers = await playerService.getAll();
+        setPlayers(updatedPlayers);
+      }
+
+      closeDialog();
+    } catch (err) {
+      console.error('Erreur:', err);
+      setError((err as Error).message || 'Une erreur est survenue');
+    } finally {
+      setLoading(false);
+    }
+  }, [tab, matchForm, teamForm, playerForm, editing, setLoading, setError, setMatches, setTeams, setPlayers, closeDialog]);
+
+  const handleDelete = useCallback(async () => {
+    if (!deleting) return;
+
+    setLoading(true);
+    setError('');
+
+    try {
+      if (tab === 'matches') {
+        await matchService.delete(deleting);
+        const updatedMatches = await matchService.getAll();
+        setMatches(updatedMatches);
+      } else if (tab === 'teams') {
+        await teamService.delete(deleting);
+        const updatedTeams = await teamService.getAll();
+        setTeams(updatedTeams);
+      } else if (tab === 'players') {
+        await playerService.delete(deleting);
+        const updatedPlayers = await playerService.getAll();
+        setPlayers(updatedPlayers);
+      }
+
+      setDeleteOpen(false);
+      setDeleting(null);
+    } catch (err) {
+      console.error('Erreur suppression:', err);
+      setError('Erreur lors de la suppression. L\'élément est peut-être utilisé ailleurs.');
+    } finally {
+      setLoading(false);
+    }
+  }, [deleting, tab, setLoading, setError, setMatches, setTeams, setPlayers]);
+
+  const openEdit = useCallback((item: Match | Team | Player) => {
+    setEditing(item);
+    setError('');
+
+    if (tab === 'matches' && 'home_team_id' in item) {
+      setMatchForm({
+        home_team_id: item.home_team_id || '',
+        away_team_id: item.away_team_id || '',
+        home_score: item.home_score || 0,
+        away_score: item.away_score || 0,
+        match_date: item.match_date?.slice(0, 16) || '',
+        phase: item.phase || 'group',
+        stadium: item.stadium || '',
+        status: item.status || 'scheduled',
+        group_name: item.group_name || ''
+      });
+    } else if (tab === 'teams' && 'code' in item) {
+      setTeamForm({
+        name: item.name || '',
+        code: item.code || '',
+        flag_url: item.flag_url || '',
+        group_name: item.group_name || '',
+        fifa_points_before: item.fifa_points_before || 0,
+        fifa_rank_before: item.fifa_rank_before || 0,
+      });
+    } else if (tab === 'players' && 'firstname' in item) {
+      setPlayerForm({
+        firstname: item.firstname || '',
+        lastname: item.lastname || '',
+        team_id: item.team_id || '',
+        position: item.position || '',
+        number: item.number || 0
+      });
+    }
+
+    setDialogOpen(true);
+  }, [tab, setError]);
 
   const handleTeamClick = useCallback((team: Team) => {
     setSelectedTeam(team);

@@ -107,7 +107,7 @@ export default async function FifaRankingPage() {
                       <TableRow>
                         <TableHead className="w-16 sm:w-20 text-xs sm:text-sm text-center">Rang</TableHead>
                         <TableHead className="w-16 sm:w-20 text-xs sm:text-sm text-center">Évol.</TableHead>
-                        <TableHead className="text-xs sm:text-sm">Équipe</TableHead>
+                        <TableHead className="flex-1 min-w-0text-xs sm:text-sm">Équipe</TableHead>
                         <TableHead className="text-center text-xs sm:text-sm">
                           <span className="hidden sm:inline">Pts actuels</span>
                           <span className="sm:hidden">Total</span>
@@ -170,7 +170,7 @@ export default async function FifaRankingPage() {
                 </p>
               )}
             </TabsContent>
-            {/* NOUVEL Onglet 3: World Full */}
+            
             <TabsContent value="world-full">
               <div className="overflow-x-auto -mx-2 sm:mx-0">
                 <Table>
@@ -187,7 +187,7 @@ export default async function FifaRankingPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {worldRankings.map((team) => (
+                    {worldRankings.slice(0, 50).map((team) => (
                         <TeamRowWorld key={team.name} team={team} view="world-full" africaRanksBefore={africaRanksBefore} />
                       ))}
                   </TableBody>

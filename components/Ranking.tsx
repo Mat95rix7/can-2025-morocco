@@ -184,7 +184,7 @@ export function TeamRowWorld({
       <TableCell className="py-3 sm:py-4 text-center">
         <RankingBadge change={change} type={type} />
       </TableCell>
-      <TableCell className="py-3 sm:py-4">
+      <TableCell className="py-3 sm:py-4 max-w-20 sm:max-w-30 lg:max-w-45 xl:max-w-65">
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="w-8 h-6 sm:w-12 sm:h-8 relative shrink-0">
             {team?.flag_url ? (
