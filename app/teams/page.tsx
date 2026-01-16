@@ -72,46 +72,43 @@ export default async function TeamsPage() {
           </p>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8 lg:mb-10">
-          <Card className="border-green-200 dark:border-green-900">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 sm:px-6 pt-4 sm:pt-6">
-              <CardTitle className="text-xs sm:text-sm font-medium">Total équipes</CardTitle>
-              <Users className="h-3 w-3 sm:h-4 sm:w-4 text-green-600" />
-            </CardHeader>
-            <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
-              <div className="text-2xl sm:text-3xl font-bold">{teams.length}</div>
-              <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
-                Nations africaines
-              </p>
+        <div className="grid grid-cols-3 gap-2 sm:gap-4 md:gap-6 mb-6 sm:mb-10">   
+          {/* Carte Équipes */}
+          <Card className="border-green-200 dark:border-green-900 shadow-sm">
+            <CardContent className="p-3 sm:p-6 text-center sm:text-left">
+              <div className="flex items-center justify-center sm:justify-between mb-1 sm:mb-2">
+                <span className="text-[10px] sm:text-sm font-medium text-muted-foreground truncate">Total équipes</span>
+                <Users className="h-3 w-3 text-green-600 hidden sm:block" />
+              </div>
+              <div className="text-lg sm:text-3xl font-bold leading-tight">{teams.length}</div>
+              <p className="text-[8px] sm:text-xs text-muted-foreground hidden sm:block">Nations</p>
             </CardContent>
           </Card>
 
-          <Card className="border-yellow-200 dark:border-yellow-900">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 sm:px-6 pt-4 sm:pt-6">
-              <CardTitle className="text-xs sm:text-sm font-medium">Groupes</CardTitle>
-              <Trophy className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-600" />
-            </CardHeader>
-            <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
-              <div className="text-2xl sm:text-3xl font-bold">{groups.length}</div>
-              <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
-                Phases de poules
-              </p>
+          {/* Carte Groupes */}
+          <Card className="border-yellow-200 dark:border-yellow-900 shadow-sm">
+            <CardContent className="p-3 sm:p-6 text-center sm:text-left">
+              <div className="flex items-center justify-center sm:justify-between mb-1 sm:mb-2">
+                <span className="text-[10px] sm:text-sm font-medium text-muted-foreground truncate">Groupes</span>
+                <Trophy className="h-3 w-3 text-yellow-600 hidden sm:block" />
+              </div>
+              <div className="text-lg sm:text-3xl font-bold leading-tight">{groups.length}</div>
+              <p className="text-[8px] sm:text-xs text-muted-foreground hidden sm:block">Poules</p>
             </CardContent>
           </Card>
 
-          <Card className="border-red-200 dark:border-red-900 sm:col-span-2 lg:col-span-1">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 sm:px-6 pt-4 sm:pt-6">
-              <CardTitle className="text-xs sm:text-sm font-medium">Équipes / groupe</CardTitle>
-              <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-red-600" />
-            </CardHeader>
-            <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
-              <div className="text-2xl sm:text-3xl font-bold">4</div>
-              <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
-                Par groupe
-              </p>
+          {/* Carte Ratio */}
+          <Card className="border-red-200 dark:border-red-900 shadow-sm">
+            <CardContent className="p-3 sm:p-6 text-center sm:text-left">
+              <div className="flex items-center justify-center sm:justify-between mb-1 sm:mb-2">
+                <span className="text-[10px] sm:text-sm font-medium text-muted-foreground truncate">Équipes / groupe</span>
+                <TrendingUp className="h-3 w-3 text-red-600 hidden sm:block" />
+              </div>
+              <div className="text-lg sm:text-3xl font-bold leading-tight">4</div>
+              <p className="text-[8px] sm:text-xs text-muted-foreground hidden sm:block">Par groupe</p>
             </CardContent>
           </Card>
+
         </div>
 
         {/* Teams Grid */}
@@ -123,7 +120,7 @@ export default async function TeamsPage() {
                   <Trophy className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-600" />
                   {group === 'Sans groupe' ? group : `Groupe ${group}`}
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5 xl:gap-6">
                   {groupedTeams[group].map((team) => (
                     <TeamCard key={team.id} team={team} playerCount={team.playerCount} />
                   ))}

@@ -34,46 +34,43 @@ export default async function Home() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <Card className="border-green-200 dark:border-green-900">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Équipes</CardTitle>
-            <Users className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{totalTeams}</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Nations participantes
-            </p>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-3 md:grid-cols-3 gap-2 sm:gap-4 md:gap-6 mb-8">
+      {/* Carte Équipes */}
+      <Card className="border-green-200 dark:border-green-900 shadow-sm">
+        <CardContent className="p-3 sm:p-6">
+          <div className="flex items-center justify-between mb-1 sm:mb-2">
+            <CardTitle className="text-[10px] sm:text-sm font-medium text-muted-foreground truncate">Équipes</CardTitle>
+            <Users className="h-3 w-3 sm:h-4 sm:w-4 text-green-600 shrink-0" />
+          </div>
+          <div className="text-lg sm:text-3xl font-bold leading-none">{totalTeams}</div>
+          <p className="text-[9px] sm:text-xs text-muted-foreground mt-1 hidden sm:block">Nations</p>
+        </CardContent>
+      </Card>
 
-        <Card className="border-yellow-200 dark:border-yellow-900">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Matchs joués</CardTitle>
-            <Trophy className="h-4 w-4 text-yellow-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{matchesPlayed}</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Rencontres disputées
-            </p>
-          </CardContent>
-        </Card>
+      {/* Carte Matchs */}
+      <Card className="border-yellow-200 dark:border-yellow-900 shadow-sm">
+        <CardContent className="p-3 sm:p-6">
+          <div className="flex items-center justify-between mb-1 sm:mb-2">
+            <CardTitle className="text-[10px] sm:text-sm font-medium text-muted-foreground truncate">Matchs</CardTitle>
+            <Trophy className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-600 shrink-0" />
+          </div>
+          <div className="text-lg sm:text-3xl font-bold leading-none">{matchesPlayed}</div>
+          <p className="text-[9px] sm:text-xs text-muted-foreground mt-1 hidden sm:block">Disputés</p>
+        </CardContent>
+      </Card>
 
-        <Card className="border-red-200 dark:border-red-900">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Phase actuelle</CardTitle>
-            <TrendingUp className="h-4 w-4 text-red-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">Huitièmes</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              En cours
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Carte Phase */}
+      <Card className="border-red-200 dark:border-red-900 shadow-sm">
+        <CardContent className="p-3 sm:p-6">
+          <div className="flex items-center justify-between mb-1 sm:mb-2">
+            <CardTitle className="text-[10px] sm:text-sm font-medium text-muted-foreground truncate">Phase</CardTitle>
+            <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-red-600 shrink-0" />
+          </div>
+          <div className="text-lg sm:text-3xl font-bold leading-none truncate">Finale</div>
+          <p className="text-[9px] sm:text-xs text-muted-foreground mt-1 hidden sm:block">En cours</p>
+        </CardContent>
+      </Card>
+    </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
         <Card>

@@ -3,6 +3,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MatchCard } from '@/components/MatchCard';
 import { Match } from '@/types/types';
+import { FinalMatchCard } from '@/components/FinalMatchCard';
+import { Trophy } from 'lucide-react';
 
 type PhaseType = 'group' | 'round_16' | 'quarter' | 'semi' | 'final';
 
@@ -75,40 +77,84 @@ export default async function MatchesPage() {
 
         {/* Tabs responsive */}
         <Tabs defaultValue="group" className="space-y-4 sm:space-y-6 lg:space-y-8">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1 sm:gap-2 h-auto p-1 sm:p-2 bg-muted/50">
+          <TabsList className="grid w-full gap-1 sm:gap-2 h-auto p-1 sm:p-2 bg-muted/50 grid-cols-2 sm:grid-cols-6 lg:grid-cols-5">
+              {phases.map((phase, index) => {
+                const isLastOnMobile = index === phases.length - 1 && phases.length % 2 !== 0;
+                const isInLastRowTablet = index >= phases.length - 2 && phases.length % 3 !== 0;
+                
+                return (
+                  <TabsTrigger 
+                    key={phase} 
+                    value={phase}
+                    className={`
+                      text-xs sm:text-sm lg:text-base py-2 sm:py-2.5 lg:py-3 
+                      data-[state=active]:bg-linear-to-r data-[state=active]:from-primary 
+                      data-[state=active]:to-accent data-[state=active]:text-white 
+                      transition-all duration-300
+                      ${isLastOnMobile ? 'col-span-2' : ''}
+                      ${isInLastRowTablet ? 'sm:col-span-3' : 'sm:col-span-2'}
+                      lg:col-span-1
+                    `}
+                  >
+                    <span className="hidden sm:inline">{getPhaseLabel(phase)}</span>
+                    <span className="sm:hidden">{getPhaseLabelShort(phase)}</span>
+                  </TabsTrigger>
+                );
+              })}
+            </TabsList>
             {phases.map((phase) => (
-              <TabsTrigger 
-                key={phase} 
-                value={phase}
-                className="text-xs sm:text-sm lg:text-base py-2 sm:py-2.5 lg:py-3 data-[state=active]:bg-linear-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white transition-all duration-300"
-              >
-                <span className="hidden sm:inline">{getPhaseLabel(phase)}</span>
-                <span className="sm:hidden">{getPhaseLabelShort(phase)}</span>
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          {phases.map((phase) => (
             <TabsContent 
               key={phase} 
               value={phase} 
-              className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-8 mt-4 sm:mt-6"
+              className="mt-4 sm:mt-6"
             >
-              {groupedByPhase[phase] && groupedByPhase[phase].length > 0 ? (
-                groupedByPhase[phase].map((match: Match) => (
-                  <MatchCard key={match.id} match={match} />
-                ))
+              {phase === 'final' ? (
+                // Carte spéciale pour la finale
+                <div className="max-w-4xl mx-auto">
+                  {groupedByPhase[phase] && groupedByPhase[phase].length > 0 ? (
+                    groupedByPhase[phase].map((match: Match) => (
+                      <FinalMatchCard 
+                        key={match.id} 
+                        match={match}
+                      />
+                    ))
+                  ) : (
+                    <Card className="border-2 border-yellow-500/50">
+                      <CardContent className="py-8 sm:py-12 lg:py-16">
+                        <div className="text-center space-y-2 sm:space-y-4">
+                          <Trophy className="h-16 w-16 sm:h-20 sm:w-20 mx-auto text-yellow-500" />
+                          <p className="text-sm sm:text-base lg:text-lg text-muted-foreground">
+                            La finale n&apos;est pas encore programmée
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
               ) : (
-                <Card className="col-span-full">
-                  <CardContent className="py-8 sm:py-12 lg:py-16">
-                    <div className="text-center space-y-2 sm:space-y-4">
-                      <div className="text-4xl sm:text-5xl lg:text-6xl">⚽</div>
-                      <p className="text-sm sm:text-base lg:text-lg text-muted-foreground">
-                        Aucun match dans cette phase pour le moment
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
+                // Grille normale pour les autres phases
+                <div className={`grid grid-cols-1 gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-8 mx-auto w-full ${
+                  phase === 'group' 
+                    ? 'lg:grid-cols-2 xl:grid-cols-3' 
+                    : 'lg:grid-cols-2 max-w-5xl'
+                }`}>
+                  {groupedByPhase[phase] && groupedByPhase[phase].length > 0 ? (
+                    groupedByPhase[phase].map((match: Match) => (
+                      <MatchCard key={match.id} match={match} />
+                    ))
+                  ) : (
+                    <Card className="col-span-full">
+                      <CardContent className="py-8 sm:py-12 lg:py-16">
+                        <div className="text-center space-y-2 sm:space-y-4">
+                          <div className="text-4xl sm:text-5xl lg:text-6xl">⚽</div>
+                          <p className="text-sm sm:text-base lg:text-lg text-muted-foreground">
+                            Aucun match dans cette phase pour le moment
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
               )}
             </TabsContent>
           ))}

@@ -42,7 +42,9 @@ export function MatchCard({ match }: { match: Match }) {
   const stadium = getStadiumInfo(match.stadium || '');
   
   return (
-    <Card className="hover:shadow-xl hover:scale-[1.02] transition-all duration-300 bg-linear-to-br from-card to-muted/50 border-2 bg-slate-900 hover:bg-slate-800 border-slate-700">
+    <Card className={`max-w-sm mx-auto w-full hover:shadow-xl hover:scale-[1.02] transition-all duration-300 bg-linear-to-br from-card to-muted/50 border-2 bg-slate-900 hover:bg-slate-800 border-slate-700
+  ${match.phase === 'final' ? 'border-yellow-500 shadow-2xl scale-105' : 'border-slate-700'}
+`}>
       <CardHeader className="pb-2 sm:pb-3 space-y-2 px-3 sm:px-6 pt-3 sm:pt-6">
         {/* DESKTOP : Info sur une ligne */}
         <div className="hidden sm:flex sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -162,8 +164,7 @@ export function MatchCard({ match }: { match: Match }) {
                   <Image
                     src={match.away_team.flag_url}
                     alt={`${match.away_team.name} flag`}
-                    width={48}
-                    height={48}
+                    fill
                     className="rounded-sm border-2 border-primary/20 shadow-lg object-cover"
                   />
                 </div>

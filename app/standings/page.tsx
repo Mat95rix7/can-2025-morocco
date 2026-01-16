@@ -74,15 +74,15 @@ function StandingsTable({ standings, groupName }: { standings: StandingWithTeam[
               <TableRow>
                 <TableHead className="w-12">Pos</TableHead>
                 <TableHead className="min-w-45">Équipe</TableHead>
-                <TableHead className="text-center w-16">Pts</TableHead>
+                <TableHead className="text-center w-12">Pts</TableHead>
                 <TableHead className="text-center w-12">J</TableHead>
                 <TableHead className="text-center w-12">G</TableHead>
                 <TableHead className="text-center w-12">N</TableHead>
                 <TableHead className="text-center w-12">P</TableHead>
-                <TableHead className="text-center w-12">BP</TableHead>
-                <TableHead className="text-center w-12">BC</TableHead>
-                <TableHead className="text-center w-16">Diff</TableHead>
-                <TableHead className="w-28">Statut</TableHead>
+                <TableHead className="text-center w-12 hidden sm:table-cell">BP</TableHead>
+                <TableHead className="text-center w-12 hidden sm:table-cell">BC</TableHead>
+                <TableHead className="text-center w-12">Diff</TableHead>
+                <TableHead className="w-28 hidden md:table-cell">Statut</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -115,14 +115,14 @@ function StandingsTable({ standings, groupName }: { standings: StandingWithTeam[
                   <TableCell className="text-center">{standing.wins}</TableCell>
                   <TableCell className="text-center">{standing.draws}</TableCell>
                   <TableCell className="text-center">{standing.losses}</TableCell>
-                  <TableCell className="text-center">{standing.goals_for}</TableCell>
-                  <TableCell className="text-center">{standing.goals_against}</TableCell>
+                  <TableCell className="text-center hidden sm:table-cell">{standing.goals_for}</TableCell>
+                  <TableCell className="text-center hidden sm:table-cell">{standing.goals_against}</TableCell>
                   <TableCell className="text-center">
                     <span className={standing.goal_difference > 0 ? 'text-green-600 font-medium' : standing.goal_difference < 0 ? 'text-red-600 font-medium' : ''}>
                       {standing.goal_difference > 0 ? '+' : ''}{standing.goal_difference}
                     </span>
                   </TableCell>
-                  <TableCell>{getQualificationBadge(standing.position)}</TableCell>
+                  <TableCell className="hidden md:table-cell">{getQualificationBadge(standing.position)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
