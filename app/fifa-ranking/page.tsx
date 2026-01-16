@@ -48,7 +48,7 @@ export default async function FifaRankingPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
+      <div className="grid grid-cols-3 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
         <StatsCard
           title="Progressions"
           value={teamsWithNewRank.filter((t) => t.africaRankChange > 0).length}
@@ -107,12 +107,12 @@ export default async function FifaRankingPage() {
                       <TableRow>
                         <TableHead className="w-16 sm:w-20 text-xs sm:text-sm text-center">Rang</TableHead>
                         <TableHead className="w-16 sm:w-20 text-xs sm:text-sm text-center">Évol.</TableHead>
-                        <TableHead className="flex-1 min-w-0text-xs sm:text-sm">Équipe</TableHead>
+                        <TableHead className="flex-1 min-w-0 text-xs sm:text-sm">Équipe</TableHead>
                         <TableHead className="text-center text-xs sm:text-sm">
                           <span className="hidden sm:inline">Pts actuels</span>
                           <span className="sm:hidden">Total</span>
                         </TableHead>
-                        <TableHead className="text-center text-xs sm:text-sm">
+                        <TableHead className="text-center text-xs sm:text-sm hidden sm:table-cell">
                           <span className="hidden sm:inline">Pts gagnés</span>
                           <span className="sm:hidden">+/-</span>
                         </TableHead>
@@ -149,7 +149,7 @@ export default async function FifaRankingPage() {
                           <span className="hidden sm:inline text-center">Pts actuels</span>
                           <span className="sm:hidden">Total</span>
                         </TableHead>
-                        <TableHead className="text-center text-xs sm:text-sm">
+                        <TableHead className="text-center text-xs sm:text-sm hidden sm:table-cell">
                           <span className="hidden sm:inline">Pts gagnés</span>
                           <span className="sm:hidden">+/-</span>
                         </TableHead>

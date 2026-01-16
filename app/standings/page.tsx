@@ -72,10 +72,10 @@ function StandingsTable({ standings, groupName }: { standings: StandingWithTeam[
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-12">Pos</TableHead>
-                <TableHead className="min-w-45">Équipe</TableHead>
+                <TableHead className="text-center w-8">#</TableHead>
+                <TableHead className="min-w-32">Équipe</TableHead>
                 <TableHead className="text-center w-12">Pts</TableHead>
-                <TableHead className="text-center w-12">J</TableHead>
+                <TableHead className="text-center w-12 hidden sm:table-cell">J</TableHead>
                 <TableHead className="text-center w-12">G</TableHead>
                 <TableHead className="text-center w-12">N</TableHead>
                 <TableHead className="text-center w-12">P</TableHead>
@@ -88,10 +88,9 @@ function StandingsTable({ standings, groupName }: { standings: StandingWithTeam[
             <TableBody>
               {groupStandings.map((standing) => (
                 <TableRow key={standing.id} className="hover:bg-muted/50">
-                  <TableCell className="font-bold">{standing.position}</TableCell>
+                  <TableCell className="font-bold text-center w-8">{standing.position}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      {/* <span className="text-2xl">{standing.team?.flag_url || '🏳️'}</span> */}
                       <div className="w-12 h-8 relative shrink-0">
                           {standing.team?.flag_url ? (
                             <Image
@@ -111,7 +110,7 @@ function StandingsTable({ standings, groupName }: { standings: StandingWithTeam[
                     </div>
                   </TableCell>
                   <TableCell className="text-center font-bold text-lg">{standing.points}</TableCell>
-                  <TableCell className="text-center">{standing.played}</TableCell>
+                  <TableCell className="text-center hidden sm:table-cell">{standing.played}</TableCell>
                   <TableCell className="text-center">{standing.wins}</TableCell>
                   <TableCell className="text-center">{standing.draws}</TableCell>
                   <TableCell className="text-center">{standing.losses}</TableCell>

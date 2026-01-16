@@ -119,7 +119,7 @@ export function TeamRow({
           {team.currentPoints.toFixed(2)}
         </span>
       </TableCell>
-      <TableCell className="text-center py-3 sm:py-4">
+      <TableCell className="text-center py-3 sm:py-4 hidden lg:table-cell">
         {team.pointsGained > 0 ? (
           <Badge className="bg-green-600 text-xs sm:text-sm">
             +{team.pointsGained.toFixed(2)}
