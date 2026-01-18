@@ -68,6 +68,7 @@ export const matchService = {
 
   // UPDATE
   async update(id: string, match: MatchUpdate) {
+    console.log(match);
     const { data, error } = await getClient()
       .from('matches')
       .update(match)

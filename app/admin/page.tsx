@@ -22,7 +22,6 @@ import { MatchFormFields } from '@/components/admin/MatchFormFields';
 import { TeamFormFields } from '@/components/admin/TeamFormField';
 import { PlayerFormFields } from '@/components/admin/PlayerFormField';
 import { Database } from '@/lib/database.types';
-import { match } from 'assert';
 
 // ==================== TYPES DE FORMULAIRES ====================
 type MatchInsert = Database['public']['Tables']['matches']['Insert'];
@@ -108,7 +107,6 @@ export default function AdminPage() {
   const [matchForm, setMatchForm] = useState<MatchInsert>(initialMatch);
   const [teamForm, setTeamForm] = useState<TeamInsert>(initialTeam);
   const [playerForm, setPlayerForm] = useState<PlayerInsert>(initialPlayer);
-//   const [form, setForm] = useState<FormData>({});
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
 
   const { matches, setMatches, teams, setTeams, players, setPlayers, loading, setLoading, error, setError } = useAdminData();
@@ -215,7 +213,7 @@ export default function AdminPage() {
     setDeleteOpen(true);
   }, []);
 
-    const handleSubmit = useCallback(async () => {
+  const handleSubmit = useCallback(async () => {
     setLoading(true);
     setError('');
 
