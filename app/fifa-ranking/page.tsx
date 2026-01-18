@@ -1,18 +1,22 @@
 // app/fifa-ranking/page.tsx
 export const dynamic = 'force-dynamic'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TrendingUp, TrendingDown, Minus, Globe, MapPin } from 'lucide-react';
 import { TeamWithCalculations } from '@/types/types';
 import { StatsCard, TeamRow, TeamRowWorld } from '@/components/Ranking';
-import { calculateCurrentPoints, calculateWorldRank, getTeamsWithMatches } from '@/lib/ranking';
+import { calculateCurrentPoints, calculateWorldRank, getTeamsWithMatches, logDebugInfo } from '@/lib/ranking';
 
 export default async function FifaRankingPage() {
   const { teams, matches, worldRankings } = await getTeamsWithMatches();
 
+
   const teamsWithCurrentPoints = teams.map((team) => {
     const calculated = calculateCurrentPoints(team, matches);
+    if (team.name==='Algeria') {
+      logDebugInfo(calculated);
+      };
     const worldRankInfo = calculateWorldRank(team.code, calculated.currentPoints, worldRankings);
 
     return {

@@ -46,9 +46,9 @@ export const TABS = [
 export const PHASE_IMPORTANCE: Record<string, number> = {
   group: 35,
   round_of_16: 40,
-  quarter_final: 40,
-  semi_final: 40,
-  third_place: 40,
+  quarter: 40,
+  semi: 40,
+  third: 40,
   final: 50,
 };
 

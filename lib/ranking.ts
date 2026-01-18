@@ -79,55 +79,108 @@ export async function getTeamsWithMatches() {
 export function calculateCurrentPoints(
   team: TeamWithRankings,
   matches: Match[]
-): { currentPoints: number; pointsGained: number; matchesPlayed: number } {
+): { currentPoints: number; pointsGained: number; matchesPlayed: number; debug: string[] } {
   let pointsGained = 0;
   let matchesPlayed = 0;
   let currentPoints = team.fifa_points_before;
+  const debug: string[] = [];
+
+  debug.push(`=== CALCUL POUR ${team.name} ===`);
+  debug.push(`Points de départ: ${currentPoints}`);
+  debug.push('');
 
   const sortedMatches = matches
     .filter(match => match.home_team_id === team.id || match.away_team_id === team.id)
     .slice()
     .sort((a, b) => new Date(a.match_date).getTime() - new Date(b.match_date).getTime());
 
-  sortedMatches.forEach((match) => {
+  sortedMatches.forEach((match, index) => {
     const isHome = match.home_team_id === team.id;
-    const isAway = match.away_team_id === team.id;
-    if (!isHome && !isAway) return;
     if (match.home_score === null || match.away_score === null) return;
 
     matchesPlayed++;
+    debug.push(`--- Match ${matchesPlayed} (${match.phase}) ---`);
 
+    // Simple : tout ce qui n'est pas "group" est knockout
+    const isKnockout = match.phase !== 'group';
+    
+    // Déterminer le résultat
+    const teamScore = isHome ? match.home_score : match.away_score;
+    const opponentScore = isHome ? match.away_score : match.home_score;
+    const opponentName = isHome ? match.away_team?.name : match.home_team?.name;
+    
+    debug.push(`${team.name} ${teamScore}-${opponentScore} ${opponentName}`);
+    
     let result: 'win' | 'draw' | 'loss';
-    if (isHome) {
-      if (match.home_score > match.away_score) result = 'win';
-      else if (match.home_score === match.away_score) result = 'draw';
-      else result = 'loss';
+    if (teamScore > opponentScore) {
+      result = 'win';
+    } else if (teamScore === opponentScore) {
+      result = 'draw';
     } else {
-      if (match.away_score > match.home_score) result = 'win';
-      else if (match.away_score === match.home_score) result = 'draw';
-      else result = 'loss';
+      result = 'loss';
+    }
+
+    debug.push(`Résultat: ${result.toUpperCase()}`);
+
+    // RÈGLE CAN : Pas de perte de points en élimination directe
+    if (isKnockout && result === 'loss') {
+      debug.push('⚠️ DÉFAITE EN KNOCKOUT → Pas de calcul de points');
+      debug.push(`Points inchangés: ${currentPoints}`);
+      debug.push('');
+      return;
     }
 
     const opponentPoints = isHome
-      ? match.away_team?.fifa_points_before || 1500
-      : match.home_team?.fifa_points_before || 1500;
+      ? (match.away_team?.fifa_points_before || 1500)
+      : (match.home_team?.fifa_points_before || 1500);
 
+    debug.push(`Points adversaire (before): ${opponentPoints}`);
+    debug.push(`Points ${team.name} (current): ${currentPoints}`);
+
+    // Formule FIFA
     const W_actual = result === 'win' ? 1 : result === 'draw' ? 0.5 : 0;
     const I = PHASE_IMPORTANCE[match.phase] || 35;
-    const W_expected = 1 / (10 ** ((opponentPoints - currentPoints) / 600) + 1);
+    
+    const powerCalc = (opponentPoints - currentPoints) / 600;
+    const W_expected = 1 / (Math.pow(10, powerCalc) + 1);
+    
+    debug.push(`W_actual: ${W_actual}`);
+    debug.push(`W_expected: ${W_expected.toFixed(4)}`);
+    debug.push(`I (importance): ${I}`);
+    debug.push(`CAF_COEFFICIENT: ${CAF_COEFFICIENT}`);
+    
     let matchPoints = I * (W_actual - W_expected) * CAF_COEFFICIENT;
-
     matchPoints = Math.round(matchPoints * 100) / 100;
+    
+    debug.push(`Calcul: ${I} × (${W_actual} - ${W_expected.toFixed(4)}) × ${CAF_COEFFICIENT} = ${matchPoints}`);
+    
     pointsGained += matchPoints;
-    currentPoints = Math.round((currentPoints + matchPoints) * 100) / 100;
+    currentPoints += matchPoints;
+    currentPoints = Math.round(currentPoints * 100) / 100;
+    
+    debug.push(`Points gagnés ce match: ${matchPoints > 0 ? '+' : ''}${matchPoints}`);
+    debug.push(`Nouveau total: ${currentPoints}`);
+    debug.push('');
   });
+
+  debug.push('=== RÉSUMÉ ===');
+  debug.push(`Points départ: ${team.fifa_points_before}`);
+  debug.push(`Points finaux: ${currentPoints}`);
+  debug.push(`Total gagné: ${pointsGained > 0 ? '+' : ''}${pointsGained}`);
+  debug.push(`Matchs joués: ${matchesPlayed}`);
 
   return {
     currentPoints,
     pointsGained: Math.round(pointsGained * 100) / 100,
-    matchesPlayed
+    matchesPlayed,
+    debug
   };
 }
+// Fonction pour afficher le debug
+export function logDebugInfo(result: ReturnType<typeof calculateCurrentPoints>) {
+  console.log(result.debug.join('\n'));
+}
+
 
 export function calculateWorldRank(
   teamCode: string,
